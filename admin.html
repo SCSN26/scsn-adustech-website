@@ -10,8 +10,17 @@ if(!confirm('Permanently delete this result? Students will no longer be able to 
 try{
 const {error:storageError}=await sb.storage.from('scsn-results').remove([path]);
 if(storageError)throw new Error('File deletion failed: '+storageError.message);
-const {error:dbError}=await sb.from('exam_results').delete().eq('id',id);
+const {data:deletedRows,error:dbError}=await sb
+.from('exam_results')
+.delete()
+.eq('id',id)
+.select('id');
+
 if(dbError)throw new Error('Database deletion failed: '+dbError.message);
+
+if(!deletedRows || deletedRows.length===0){
+throw new Error('No database row was deleted. Check the admin session and DELETE permissions.');
+}
 alert('Examination result permanently deleted.');
 await listResults();
 }catch(error){
