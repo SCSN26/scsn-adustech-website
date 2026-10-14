@@ -19,6 +19,13 @@ nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-f
 .resource-more{margin-top:12px;width:100%;}.primary{background:var(--green);color:white;box-shadow:0 8px 22px rgba(21,148,71,.22)}.secondary{background:white;border:1px solid var(--line)}.hero-card{background:white;border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow);text-align:center}.hero-card img{width:190px;max-width:70%;}.hero-card h3{margin:10px 0 2px}.hero-card p{font-size:14px;margin:0 auto}
 section{padding:72px 0}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:26px}.section-head h2{font-size:32px;margin:0}.section-head p{margin:4px 0 0;color:var(--muted)}
 .result-viewer{width:100%;height:85vh;min-height:700px;border:1px solid var(--line);border-radius:12px;background:#f3f6f4}
+#announcements{scroll-margin-top:85px}.announcement-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.announcement-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 8px 24px rgba(17,72,42,.06)}
+.announcement-card.pinned{border:2px solid var(--gold)}
+.announcement-card h3{margin:8px 0}.announcement-meta{font-size:12px;color:var(--muted);font-weight:700}
+.announcement-category{display:inline-block;background:#e0f5e8;color:var(--green2);padding:4px 9px;border-radius:99px;font-size:11px;font-weight:800}
+.announcement-empty{background:#fff;border:1px dashed var(--line);padding:22px;border-radius:16px;color:var(--muted)}
+
 .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.level{padding:22px;border-radius:18px;background:#fff;border:1px solid var(--line);cursor:pointer}.level:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.level b{font-size:25px}.level p{color:var(--muted);margin:5px 0 0}
 .notice{background:#103c25;color:#fff;border-radius:24px;padding:28px;display:flex;justify-content:space-between;gap:20px;align-items:center}.notice p{margin:4px 0;color:#d7ebdf}.notice .btn{background:white;color:#103c25}
 .table-wrap{overflow:auto;background:white;border:1px solid var(--line);border-radius:16px}.course-table{width:100%;border-collapse:collapse;min-width:650px}.course-table th,.course-table td{text-align:left;padding:12px 14px;border-bottom:1px solid #e8f0eb}.course-table th{background:#eef8f1;color:#174b2c;font-size:12px}.course-table td{font-size:14px}.course-table tr:last-child td{border-bottom:0}.semester{margin-top:25px}.semester h3{margin:0 0 10px}
@@ -35,7 +42,7 @@ footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;ju
 <body>
 <nav><div class="wrap navin">
 <a class="brand" href="#home"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div>SCSN ADUSTECH<small>WUDIL CHAPTER</small></div></a>
-<div class="links"><a href="#resources">Resources</a><a href="#results">Results</a><a href="#courses">Courses</a><a href="#about">About</a><a href="#contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
+<div class="links"><a href="#announcements">Announcements</a><a href="#resources">Resources</a><a href="#results">Results</a><a href="#courses">Courses</a><a href="#about">About</a><a href="#contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
 <button class="menu" onclick="document.querySelector('.links').style.display='flex'">☰</button>
 </div></nav>
 
@@ -46,6 +53,11 @@ footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;ju
 <div class="cta"><a class="btn primary" href="#resources">Find resources</a><a class="btn secondary" href="#courses">Browse courses</a></div></div>
 <div class="hero-card"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><h3>SCSN ADUSTECH Chapter</h3><p>Aliko Dangote University of Science and Technology, Wudil</p></div>
 </div></header>
+
+<section id="announcements"><div class="wrap">
+<div class="section-head"><div><h2>📢 SCSN Announcements</h2><p>Latest notices and updates from the chapter.</p></div></div>
+<div id="announcementList" class="announcement-grid"><div class="announcement-empty">Loading announcements…</div></div>
+</div></section>
 
 <section id="resources"><div class="wrap">
 <div class="section-head"><div><h2>Student Resources</h2><p>Search by course code, course title or resource type.</p></div></div>
@@ -144,8 +156,18 @@ function b64ToBytes(s){const bin=atob(s);const out=new Uint8Array(bin.length);fo
 async function deriveResultKey(password,salt){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:b64ToBytes(salt),iterations:200000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt'])}
 async function unlockResult(){if(!selectedResult)return;const password=document.getElementById('resultPassword').value;const msg=document.getElementById('resultMsg');if(!password)return msg.textContent='Enter the exact password.';msg.textContent='Checking password…';try{const {data,error}=await sb.functions.invoke('view-result',{body:{result_id:selectedResult.id,password}});if(error){msg.textContent='Incorrect password, or this result has expired.';return}if(!(data instanceof Blob))throw new Error('Invalid result response.');if(resultBlobUrl)URL.revokeObjectURL(resultBlobUrl);resultBlobUrl=URL.createObjectURL(data);const viewer=document.getElementById('resultViewer');viewer.innerHTML='<embed src="'+resultBlobUrl+'" type="application/pdf" style="width:100%;height:100%;border:0">';document.getElementById('resultViewerWrap').classList.remove('hidden');msg.textContent='Result unlocked. View only.'}catch(e){console.error(e);msg.textContent='Incorrect password, or this result has expired.'}}
 async function loadExamResults(){const box=document.getElementById('resultLevels');const {data,error}=await sb.rpc('list_active_exam_results');if(error){box.innerHTML='<p class="muted">Results are temporarily unavailable.</p>';return}if(!data||!data.length){box.innerHTML='<p class="muted">No active examination results right now.</p>';return}const levels=[100,200,300,400];box.innerHTML=levels.map(level=>{const rows=data.filter(r=>r.level===level);return `<div class="result-card"><h3>🎓 ${level} Level</h3>${rows.length?rows.map(r=>`<div class="result-item"><strong>${esc(r.title)}</strong><div class="muted">${esc([r.session,r.semester].filter(Boolean).join(' • '))}</div><div class="muted" style="margin:5px 0 9px">Available until ${new Date(r.expires_at).toLocaleDateString()}</div><button class="btn primary" style="padding:8px 12px;font-size:12px" onclick='openResult("${r.id}","${esc(r.title).replace(/"/g,'&quot;')}","${esc([r.session,r.semester].filter(Boolean).join(' • ')).replace(/"/g,'&quot;')}")'>🔐 Enter Password & View</button></div>`).join(''):'<p class="muted">No active result.</p>'}</div>`}).join('')}
+
+function announcementDate(value){try{return new Date(value).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}catch(e){return ''}}
+async function loadAnnouncements(){
+  const box=document.getElementById('announcementList');
+  const {data,error}=await sb.from('announcements').select('id,title,content,category,is_pinned,created_at').eq('is_published',true).order('is_pinned',{ascending:false}).order('created_at',{ascending:false}).limit(12);
+  if(error){console.error('Announcements could not be loaded:',error);box.innerHTML='<div class="announcement-empty">Announcements are temporarily unavailable. Please check back later.</div>';return}
+  if(!data||!data.length){box.innerHTML='<div class="announcement-empty">There are no announcements at the moment. Please check back for chapter updates.</div>';return}
+  box.innerHTML=data.map(a=>`<article class="announcement-card ${a.is_pinned?'pinned':''}">${a.is_pinned?'<span class="pill">📌 Important</span><br>':''}<span class="announcement-category">${esc(a.category||'General')}</span><h3>${esc(a.title)}</h3><div class="announcement-meta">${announcementDate(a.created_at)}</div><p style="white-space:pre-wrap;margin-bottom:0">${esc(a.content)}</p></article>`).join('');
+}
+
 document.getElementById('year').textContent=new Date().getFullYear();
-loadResources();loadExamResults();
+loadResources();loadExamResults();loadAnnouncements();
 window.onclick=e=>{if(e.target.classList.contains('modal'))e.target.classList.remove('show')}
 </script>
 </body></html>
