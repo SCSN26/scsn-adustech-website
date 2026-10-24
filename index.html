@@ -42,7 +42,7 @@ footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;ju
 <body>
 <nav><div class="wrap navin">
 <a class="brand" href="#home"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div>SCSN ADUSTECH<small>WUDIL CHAPTER</small></div></a>
-<div class="links"><a href="#announcements">Announcements</a><a href="#resources">Resources</a><a href="#results">Results</a><a href="#courses">Courses</a><a href="#about">About</a><a href="#contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
+<div class="links"><a href="#announcements">Announcements</a><a href="#resources">Resources</a><a href="#results">Results</a><a href="#student-verification">Verify Result</a><a href="#courses">Courses</a><a href="#about">About</a><a href="#contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
 <button class="menu" onclick="document.querySelector('.links').style.display='flex'">☰</button>
 </div></nav>
 
@@ -78,6 +78,32 @@ footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;ju
 <div class="section-head"><div><h2>Examination Results</h2><p>Temporary, password-protected results for 100–400 Level students.</p></div></div>
 <div id="resultLevels" class="result-levels"><p class="muted">Loading active results…</p></div>
 <p class="muted" style="margin-top:16px">Results are available only until their expiry date. There is no student download button.</p>
+</div></section>
+
+<section id="student-verification"><div class="wrap">
+<div class="section-head"><div><h2>Student Result Verification</h2><p>Verify a published result using your registration number and JAMB registration number.</p></div></div>
+<div class="card" style="background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;max-width:760px">
+<form id="studentResultForm" style="display:grid;gap:14px">
+<label for="studentResultBatch"><strong>Select Result</strong></label>
+<select id="studentResultBatch" required style="padding:13px;border:1px solid var(--line);border-radius:10px;font:inherit;background:white"><option value="">Loading available results…</option></select>
+<label for="studentRegNo"><strong>Registration Number</strong></label>
+<input id="studentRegNo" name="reg_no" required maxlength="80" autocomplete="off" placeholder="Enter your registration number" style="padding:13px;border:1px solid var(--line);border-radius:10px;font:inherit">
+<label for="studentJambNo"><strong>JAMB Registration Number</strong></label>
+<input id="studentJambNo" name="jamb_no" required maxlength="80" autocomplete="off" placeholder="Enter your JAMB registration number" style="padding:13px;border:1px solid var(--line);border-radius:10px;font:inherit">
+<button id="studentVerifyButton" class="btn primary" type="submit">Verify and View Result</button>
+<p id="studentVerifyMessage" class="muted" role="status" aria-live="polite" style="margin:0"></p>
+</form>
+<div id="studentVerifiedResult" class="hidden" style="margin-top:22px;border-top:1px solid var(--line);padding-top:18px">
+<h3 style="margin-top:0">Verified Student Result</h3>
+<p><strong>Student:</strong> <span id="verifiedStudentName"></span></p>
+<p><strong>Registration number:</strong> <span id="verifiedStudentReg"></span></p>
+<p><strong>Result:</strong> <span id="verifiedResultTitle"></span></p>
+<p><strong>Level / semester / session:</strong> <span id="verifiedResultMeta"></span></p>
+<div style="background:#f5faf7;border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto"><pre id="verifiedResultData" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;margin:0"></pre></div>
+<p class="muted" style="font-size:12px">Keep your result details private. This page does not provide a download button.</p>
+</div>
+</div>
+<p class="muted" style="max-width:760px;margin-top:14px">This verification service is separate from the existing password-protected Examination Results section below.</p>
 </div></section>
 
 <section><div class="wrap"><div class="notice"><div><strong>Join the SCSN student community</strong><p>Use the chapter WhatsApp community for updates and student communication.</p></div><a class="btn" target="_blank" href="https://chat.whatsapp.com/JeEoOtFY5LWLxR5ci1vUsX?s=cl&p=i&mlu=4&ilr=4">Open WhatsApp group</a></div></div></section>
@@ -157,6 +183,49 @@ async function deriveResultKey(password,salt){const base=await crypto.subtle.imp
 async function unlockResult(){if(!selectedResult)return;const password=document.getElementById('resultPassword').value;const msg=document.getElementById('resultMsg');if(!password)return msg.textContent='Enter the exact password.';msg.textContent='Checking password…';try{const {data,error}=await sb.functions.invoke('view-result',{body:{result_id:selectedResult.id,password}});if(error){msg.textContent='Incorrect password, or this result has expired.';return}if(!(data instanceof Blob))throw new Error('Invalid result response.');if(resultBlobUrl)URL.revokeObjectURL(resultBlobUrl);resultBlobUrl=URL.createObjectURL(data);const viewer=document.getElementById('resultViewer');viewer.innerHTML='<embed src="'+resultBlobUrl+'" type="application/pdf" style="width:100%;height:100%;border:0">';document.getElementById('resultViewerWrap').classList.remove('hidden');msg.textContent='Result unlocked. View only.'}catch(e){console.error(e);msg.textContent='Incorrect password, or this result has expired.'}}
 async function loadExamResults(){const box=document.getElementById('resultLevels');const {data,error}=await sb.rpc('list_active_exam_results');if(error){box.innerHTML='<p class="muted">Results are temporarily unavailable.</p>';return}if(!data||!data.length){box.innerHTML='<p class="muted">No active examination results right now.</p>';return}const levels=[100,200,300,400];box.innerHTML=levels.map(level=>{const rows=data.filter(r=>r.level===level);return `<div class="result-card"><h3>🎓 ${level} Level</h3>${rows.length?rows.map(r=>`<div class="result-item"><strong>${esc(r.title)}</strong><div class="muted">${esc([r.session,r.semester].filter(Boolean).join(' • '))}</div><div class="muted" style="margin:5px 0 9px">Available until ${new Date(r.expires_at).toLocaleDateString()}</div><button class="btn primary" style="padding:8px 12px;font-size:12px" onclick='openResult("${r.id}","${esc(r.title).replace(/"/g,'&quot;')}","${esc([r.session,r.semester].filter(Boolean).join(' • ')).replace(/"/g,'&quot;')}")'>🔐 Enter Password & View</button></div>`).join(''):'<p class="muted">No active result.</p>'}</div>`}).join('')}
 
+
+async function loadStudentResultBatches(){
+  const select=document.getElementById('studentResultBatch');
+  const message=document.getElementById('studentVerifyMessage');
+  const {data,error}=await sb.functions.invoke('scsn-result-batches',{body:{}});
+  if(error||!data||!Array.isArray(data.batches)){
+    select.innerHTML='<option value="">Results temporarily unavailable</option>';
+    message.textContent='Available results could not be loaded. Please try again later.';
+    return;
+  }
+  if(!data.batches.length){select.innerHTML='<option value="">No published results available</option>';return;}
+  select.innerHTML='<option value="">Choose a result</option>'+data.batches.map(b=>{
+    const meta=[b.level?`${b.level} Level`:null,b.semester,b.session].filter(Boolean).join(' • ');
+    return `<option value="${esc(b.id)}">${esc(b.title)}${meta?' — '+esc(meta):''}</option>`;
+  }).join('');
+}
+function hideVerifiedStudentResult(){document.getElementById('studentVerifiedResult').classList.add('hidden');}
+document.getElementById('studentResultForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  const button=document.getElementById('studentVerifyButton');
+  const message=document.getElementById('studentVerifyMessage');
+  const batchId=document.getElementById('studentResultBatch').value;
+  const regNo=document.getElementById('studentRegNo').value.trim();
+  const jambNo=document.getElementById('studentJambNo').value.trim();
+  hideVerifiedStudentResult();
+  if(!batchId||!regNo||!jambNo){message.textContent='Select a result and enter both required numbers.';return;}
+  button.disabled=true;button.textContent='Verifying…';message.textContent='Checking your details…';
+  try{
+    const {data,error}=await sb.functions.invoke('scsn-result-lookup',{body:{batch_id:batchId,reg_no:regNo,jamb_no:jambNo}});
+    if(error||!data||!data.result){message.textContent=(data&&data.error)||'We could not verify these details. Check your entries and try again.';return;}
+    const r=data.result;
+    document.getElementById('verifiedStudentName').textContent=r.student_name||'—';
+    document.getElementById('verifiedStudentReg').textContent=r.reg_no||'—';
+    document.getElementById('verifiedResultTitle').textContent=r.title||'—';
+    document.getElementById('verifiedResultMeta').textContent=[r.level?`${r.level} Level`:null,r.semester,r.session].filter(Boolean).join(' • ')||'—';
+    const resultData=r.result_data;
+    document.getElementById('verifiedResultData').textContent=typeof resultData==='string'?resultData:JSON.stringify(resultData,null,2);
+    document.getElementById('studentVerifiedResult').classList.remove('hidden');
+    message.textContent='Your details were verified successfully.';
+  }catch(error){console.error('Student result verification failed.');message.textContent='Verification is temporarily unavailable. Please try again later.';}
+  finally{button.disabled=false;button.textContent='Verify and View Result';}
+});
+
 function announcementDate(value){try{return new Date(value).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})}catch(e){return ''}}
 async function loadAnnouncements(){
   const box=document.getElementById('announcementList');
@@ -167,7 +236,7 @@ async function loadAnnouncements(){
 }
 
 document.getElementById('year').textContent=new Date().getFullYear();
-loadResources();loadExamResults();loadAnnouncements();
+loadResources();loadExamResults();loadAnnouncements();loadStudentResultBatches();
 window.onclick=e=>{if(e.target.classList.contains('modal'))e.target.classList.remove('show')}
 </script>
 </body></html>
