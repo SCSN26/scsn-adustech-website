@@ -127,11 +127,22 @@ footer{background:#0A1830}
 #studentVerifyButton:focus-visible,.btn:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #C6A04A;outline-offset:2px}
 @media(max-width:700px){body{font-size:16px}.hero{padding:38px 0 32px}section{padding:42px 0}.section-head h2{font-size:28px}}
 
+
+/* Official department history placeholder and polished action states */
+.history-placeholder{margin-top:24px;padding:20px;border:1px solid #DCE2EA;border-left:4px solid #C6A04A;border-radius:14px;background:#fff}
+.history-placeholder .history-label{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.09em;color:#17365F;background:#F4EBD3;padding:5px 9px;border-radius:99px}
+.history-placeholder h3{margin:12px 0 6px;color:#10264A}
+.history-placeholder p{margin:0;color:#526176}
+.btn{transition:transform .16s ease,background-color .16s ease,box-shadow .16s ease}
+.btn:active{transform:translateY(1px)}
+.portal-menu-grid a:focus-visible{outline:3px solid #C6A04A;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.portal-menu-grid a{transition:none}}
+
 </style>
 </head>
 <body>
 <nav><div class="wrap navin">
-<a class="brand" href="#home"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div>SCSN ADUSTECH<small>WUDIL CHAPTER</small></div></a>
+<a class="brand" href="#home" data-portal-page="home"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div>SCSN ADUSTECH<small>WUDIL CHAPTER</small></div></a>
 <div class="links"><a href="#announcements" data-portal-page="announcements">Announcements</a><a href="#resources" data-portal-page="resources">Resources</a><a href="#results" data-portal-page="results">Results</a><a href="#student-verification" data-portal-page="student-verification">Verify Result</a><a href="#courses" data-portal-page="courses">Courses</a><a href="#about" data-portal-page="about">About</a><a href="#contact" data-portal-page="contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
 <button class="menu" id="menuToggle" aria-expanded="false" aria-controls="portalMenu">☰ <span class="sr-only">Open portal menu</span></button>
 </div></nav>
@@ -146,7 +157,7 @@ footer{background:#0A1830}
 <div><span class="eyebrow">🧪 Chemistry students' academic hub</span><h1>Learn. Share. <span>Grow.</span></h1>
 <p>Students' Chemical Society of Nigeria (SCSN), ADUSTECH Wudil Chapter — a simple home for chemistry resources, course information and chapter updates.</p>
 <p><b>Motto:</b> Chemistry reshape the nature</p>
-<div class="cta"><a class="btn primary" href="#resources">Find resources</a><a class="btn secondary" href="#courses">Browse courses</a></div></div>
+<div class="cta"><a class="btn primary" href="#resources" data-portal-page="resources">Find resources</a><a class="btn secondary" href="#courses" data-portal-page="courses">Browse courses</a></div></div>
 <div class="hero-card"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><h3>SCSN ADUSTECH Chapter</h3><p>Aliko Dangote University of Science and Technology, Wudil</p></div>
 </div></header>
 
@@ -209,7 +220,7 @@ footer{background:#0A1830}
 
 <section id="about"><div class="wrap about">
 <div class="logos"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><img src="assets/adustech-logo.jpeg" alt="ADUSTECH logo"></div>
-<div><h2>About the Chapter</h2><p>SCSN ADUSTECH Wudil Chapter supports chemistry students with an accessible academic resource hub and chapter information.</p><p><b>President:</b> Sen. Ahmad Muhammad Jaji (Sen. Jaji)</p><p><b>University:</b> Aliko Dangote University of Science and Technology, Wudil</p><p><b>Motto:</b> Chemistry reshape the nature</p></div>
+<div><h2>About the Chapter</h2><p>SCSN ADUSTECH Wudil Chapter supports chemistry students with an accessible academic resource hub and chapter information.</p><p><b>President:</b> Sen. Ahmad Muhammad Jaji (Sen. Jaji)</p><p><b>University:</b> Aliko Dangote University of Science and Technology, Wudil</p><p><b>Motto:</b> Chemistry reshape the nature</p><div class="history-placeholder"><span class="history-label">DEPARTMENT PROFILE</span><h3>History of the Chemistry Department</h3><p>The official departmental history will be published here after it is supplied and approved by the department. This placeholder avoids presenting unverified historical information as fact.</p></div></div>
 </div></section>
 
 <section id="contact"><div class="wrap"><div class="section-head"><div><h2>Contact</h2><p>Chapter contact details supplied for the website.</p></div></div>
@@ -336,7 +347,7 @@ function setPortalView(view,updateHash=true){
  const menu=document.getElementById('portalMenu'),toggle=document.getElementById('menuToggle');
  if(menu)menu.classList.add('hidden');
  if(toggle)toggle.setAttribute('aria-expanded','false');
- if(updateHash&&location.hash!=='#'+view)history.replaceState(null,'','#'+view);
+ if(updateHash&&location.hash!=='#'+view)history.pushState({portalView:view},'','#'+view);
  window.scrollTo({top:0,behavior:'auto'});
 }
 document.addEventListener('click',function(e){
@@ -348,6 +359,7 @@ document.getElementById('menuToggle').addEventListener('click',function(){
  menu.classList.toggle('hidden',!open);this.setAttribute('aria-expanded',String(open));
 });
 document.getElementById('closePortalMenu').addEventListener('click',function(){document.getElementById('portalMenu').classList.add('hidden');document.getElementById('menuToggle').setAttribute('aria-expanded','false');});
+window.addEventListener('popstate',function(){setPortalView((location.hash||'#home').slice(1),false);});
 
 document.getElementById('year').textContent=new Date().getFullYear();
 setPortalView((location.hash||'#home').slice(1),false);
