@@ -58,14 +58,47 @@ footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;ju
   #studentVerifiedResult p{overflow-wrap:anywhere}
   #studentVerifiedResult pre{font-size:14px!important}
 }
+
+/* Premium portal shell and feature-by-feature navigation */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.portal-menu{position:sticky;top:76px;z-index:19;background:rgba(255,255,255,.98);border-bottom:1px solid var(--line);box-shadow:0 18px 36px rgba(17,72,42,.10);padding:22px max(20px,calc((100vw - 1180px)/2))}
+.portal-menu.hidden{display:none!important}
+.portal-menu-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.portal-menu-head strong{display:block;font-size:18px}.portal-menu-head small{display:block;color:var(--muted);margin-top:3px}
+.close-menu{border:1px solid var(--line);background:#f5faf7;border-radius:10px;font-size:22px;padding:5px 12px;cursor:pointer;color:var(--ink)}
+.portal-menu-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.portal-menu-grid a{display:grid;grid-template-columns:36px minmax(0,1fr);column-gap:10px;align-items:center;background:linear-gradient(145deg,#fff,#f5faf7);border:1px solid var(--line);border-radius:14px;padding:14px;transition:transform .18s,border-color .18s,box-shadow .18s}
+.portal-menu-grid a:hover,.portal-menu-grid a:focus-visible{transform:translateY(-2px);border-color:#8bcaa4;box-shadow:var(--shadow);outline:none}
+.portal-menu-grid a>span{grid-row:span 2;display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#e3f5e9;color:var(--green2);font-size:18px}
+.portal-menu-grid b{font-size:13px}.portal-menu-grid small{font-size:11px;color:var(--muted);line-height:1.35;margin-top:2px}
+body[data-portal-view] > section,body[data-portal-view] > header{display:none}
+body[data-portal-view="home"] #home,body[data-portal-view="home"] #announcements,body[data-portal-view="home"] #about,body[data-portal-view="home"] #contact{display:block}
+body[data-portal-view="announcements"] #announcements,body[data-portal-view="resources"] #resources,body[data-portal-view="courses"] #courses,body[data-portal-view="results"] #results,body[data-portal-view="student-verification"] #student-verification,body[data-portal-view="about"] #about,body[data-portal-view="contact"] #contact{display:block}
+body[data-portal-view] > footer{display:block}
+body[data-portal-view="home"] #announcements{padding:28px 0 42px;background:#fff}
+body[data-portal-view="home"] #announcements .section-head{margin-bottom:16px}
+body[data-portal-view="home"] #announcements .announcement-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+body[data-portal-view]:not([data-portal-view="home"]) > #announcements{padding-top:40px}
+body[data-portal-view="home"] #about,body[data-portal-view="home"] #contact{padding-top:36px;padding-bottom:36px}
+body[data-portal-view="home"] footer{margin-top:20px}
+body[data-portal-view] .hero{min-height:unset}
+@media(max-width:850px){.portal-menu{top:68px;padding:16px}.portal-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.portal-menu-grid a{padding:12px}}
+@media(max-width:520px){.portal-menu-grid{grid-template-columns:1fr}.portal-menu-grid a{grid-template-columns:38px minmax(0,1fr)}.portal-menu{max-height:calc(100vh - 120px);overflow:auto}.portal-menu-head small{max-width:240px}}
+
 </style>
 </head>
 <body>
 <nav><div class="wrap navin">
 <a class="brand" href="#home"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div>SCSN ADUSTECH<small>WUDIL CHAPTER</small></div></a>
-<div class="links"><a href="#announcements">Announcements</a><a href="#resources">Resources</a><a href="#results">Results</a><a href="#student-verification">Verify Result</a><a href="#courses">Courses</a><a href="#about">About</a><a href="#contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
-<button class="menu" onclick="document.querySelector('.links').style.display='flex'">☰</button>
+<div class="links"><a href="#announcements" data-portal-page="announcements">Announcements</a><a href="#resources" data-portal-page="resources">Resources</a><a href="#results" data-portal-page="results">Results</a><a href="#student-verification" data-portal-page="student-verification">Verify Result</a><a href="#courses" data-portal-page="courses">Courses</a><a href="#about" data-portal-page="about">About</a><a href="#contact" data-portal-page="contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
+<button class="menu" id="menuToggle" aria-expanded="false" aria-controls="portalMenu">☰ <span class="sr-only">Open portal menu</span></button>
 </div></nav>
+<div id="portalMenu" class="portal-menu hidden" aria-label="Portal features"><div class="portal-menu-head"><div><strong>Explore SCSN Portal</strong><small>Select a feature to open its dedicated page.</small></div><button type="button" class="close-menu" id="closePortalMenu" aria-label="Close menu">×</button></div><div class="portal-menu-grid"><a href="#home" data-portal-page="home"><span>⌂</span><b>Home</b><small>Chapter overview</small></a><a href="#resources" data-portal-page="resources"><span>📚</span><b>Academic Resources</b><small>Notes, past questions & more</small></a><a href="#courses" data-portal-page="courses"><span>🧪</span><b>Course Catalogue</b><small>100–400 Level</small></a><a href="#results" data-portal-page="results"><span>🔐</span><b>Examination Results</b><small>Existing protected results</small></a><a href="#student-verification" data-portal-page="student-verification"><span>✓</span><b>Verify Student Result</b><small>Published batches</small></a><a href="#announcements" data-portal-page="announcements"><span>📢</span><b>Announcements</b><small>Chapter updates</small></a><a href="#about" data-portal-page="about"><span>🏛</span><b>About the Chapter</b><small>Identity & overview</small></a><a href="#contact" data-portal-page="contact"><span>☎</span><b>Chapter Contacts</b><small>Contact information</small></a></div></div>
+
+<section id="announcements"><div class="wrap">
+<div class="section-head"><div><h2>📢 SCSN Announcements</h2><p>Latest notices and updates from the chapter.</p></div></div>
+<div id="announcementList" class="announcement-grid"><div class="announcement-empty">Loading announcements…</div></div>
+</div></section>
 
 <header id="home" class="hero"><div class="wrap hero-grid">
 <div><span class="eyebrow">🧪 Chemistry students' academic hub</span><h1>Learn. Share. <span>Grow.</span></h1>
@@ -75,10 +108,7 @@ footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;ju
 <div class="hero-card"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><h3>SCSN ADUSTECH Chapter</h3><p>Aliko Dangote University of Science and Technology, Wudil</p></div>
 </div></header>
 
-<section id="announcements"><div class="wrap">
-<div class="section-head"><div><h2>📢 SCSN Announcements</h2><p>Latest notices and updates from the chapter.</p></div></div>
-<div id="announcementList" class="announcement-grid"><div class="announcement-empty">Loading announcements…</div></div>
-</div></section>
+
 
 <section id="resources"><div class="wrap">
 <div class="section-head"><div><h2>Student Resources</h2><p>Search by course code, course title or resource type.</p></div></div>
@@ -256,7 +286,29 @@ async function loadAnnouncements(){
   box.innerHTML=data.map(a=>`<article class="announcement-card ${a.is_pinned?'pinned':''}">${a.is_pinned?'<span class="pill">📌 Important</span><br>':''}<span class="announcement-category">${esc(a.category||'General')}</span><h3>${esc(a.title)}</h3><div class="announcement-meta">${announcementDate(a.created_at)}</div><p style="white-space:pre-wrap;margin-bottom:0">${esc(a.content)}</p></article>`).join('');
 }
 
+
+function setPortalView(view,updateHash=true){
+ const valid=['home','announcements','resources','courses','results','student-verification','about','contact'];
+ if(!valid.includes(view))view='home';
+ document.body.setAttribute('data-portal-view',view);
+ const menu=document.getElementById('portalMenu'),toggle=document.getElementById('menuToggle');
+ if(menu)menu.classList.add('hidden');
+ if(toggle)toggle.setAttribute('aria-expanded','false');
+ if(updateHash&&location.hash!=='#'+view)history.replaceState(null,'','#'+view);
+ window.scrollTo({top:0,behavior:'auto'});
+}
+document.addEventListener('click',function(e){
+ const link=e.target.closest('[data-portal-page]');
+ if(link){e.preventDefault();setPortalView(link.dataset.portalPage);return;}
+});
+document.getElementById('menuToggle').addEventListener('click',function(){
+ const menu=document.getElementById('portalMenu');const open=menu.classList.contains('hidden');
+ menu.classList.toggle('hidden',!open);this.setAttribute('aria-expanded',String(open));
+});
+document.getElementById('closePortalMenu').addEventListener('click',function(){document.getElementById('portalMenu').classList.add('hidden');document.getElementById('menuToggle').setAttribute('aria-expanded','false');});
+
 document.getElementById('year').textContent=new Date().getFullYear();
+setPortalView((location.hash||'#home').slice(1),false);
 loadResources();loadExamResults();loadAnnouncements();loadStudentResultBatches();
 window.onclick=e=>{if(e.target.classList.contains('modal'))e.target.classList.remove('show')}
 </script>
