@@ -9,55 +9,175 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
-:root{--green:#159447;--green2:#0b6f35;--ink:#10231a;--muted:#65756d;--bg:#f5faf7;--card:#fff;--line:#dce9e1;--gold:#f3bd3e;--shadow:0 16px 45px rgba(17,72,42,.10)}
+:root{--green:#10264A;--green2:#17365F;--ink:#142238;--muted:#526176;--bg:#F7F9FC;--card:#fff;--line:#DCE2EA;--gold:#C6A04A;--shadow:0 16px 45px rgba(16,38,74,.12)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.55}
 a{color:inherit;text-decoration:none}.wrap{max-width:1180px;margin:auto;padding:0 20px}
 nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .navin{height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:11px;font-weight:850}.brand img{width:48px;height:48px;object-fit:contain}.brand small{display:block;color:var(--muted);font-weight:600;font-size:11px}.links{display:flex;gap:20px;align-items:center;font-size:14px;font-weight:700}.links a:hover{color:var(--green)}.menu{display:none;border:0;background:none;font-size:26px}
-.hero{padding:68px 0 56px;background:radial-gradient(circle at 80% 10%,#d9f6e5,transparent 32%),linear-gradient(135deg,#effaf3,#fff)}
-.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}.eyebrow{display:inline-flex;gap:8px;align-items:center;background:#e0f5e8;color:var(--green2);padding:7px 12px;border-radius:99px;font-weight:800;font-size:12px}.hero h1{font-size:clamp(36px,6vw,64px);line-height:1.02;margin:18px 0 15px;letter-spacing:-2px}.hero h1 span{color:var(--green)}.hero p{font-size:18px;color:#506159;max-width:650px}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;padding:12px 17px;font-weight:800;cursor:pointer}
+.hero{padding:68px 0 56px;background:radial-gradient(circle at 80% 10%,#E4EAF3,transparent 32%),linear-gradient(135deg,#F4F7FB,#fff)}
+.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}.eyebrow{display:inline-flex;gap:8px;align-items:center;background:#F4EBD3;color:var(--green2);padding:7px 12px;border-radius:99px;font-weight:800;font-size:12px}.hero h1{font-size:clamp(36px,6vw,64px);line-height:1.02;margin:18px 0 15px;letter-spacing:-2px}.hero h1 span{color:var(--green)}.hero p{font-size:18px;color:#526176;max-width:650px}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;padding:12px 17px;font-weight:800;cursor:pointer}
 .resource-more{margin-top:12px;width:100%;}.primary{background:var(--green);color:white;box-shadow:0 8px 22px rgba(21,148,71,.22)}.secondary{background:white;border:1px solid var(--line)}.hero-card{background:white;border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:var(--shadow);text-align:center}.hero-card img{width:190px;max-width:70%;}.hero-card h3{margin:10px 0 2px}.hero-card p{font-size:14px;margin:0 auto}
 section{padding:72px 0}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:26px}.section-head h2{font-size:32px;margin:0}.section-head p{margin:4px 0 0;color:var(--muted)}
-.result-viewer{width:100%;height:85vh;min-height:700px;border:1px solid var(--line);border-radius:12px;background:#f3f6f4}
+.result-viewer{width:100%;height:85vh;min-height:700px;border:1px solid var(--line);border-radius:12px;background:#F1F4F8}
 #announcements{scroll-margin-top:85px}.announcement-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
 .announcement-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 8px 24px rgba(17,72,42,.06)}
 .announcement-card.pinned{border:2px solid var(--gold)}
 .announcement-card h3{margin:8px 0}.announcement-meta{font-size:12px;color:var(--muted);font-weight:700}
-.announcement-category{display:inline-block;background:#e0f5e8;color:var(--green2);padding:4px 9px;border-radius:99px;font-size:11px;font-weight:800}
+.announcement-category{display:inline-block;background:#F4EBD3;color:var(--green2);padding:4px 9px;border-radius:99px;font-size:11px;font-weight:800}
 .announcement-empty{background:#fff;border:1px dashed var(--line);padding:22px;border-radius:16px;color:var(--muted)}
 
 .levels{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.level{padding:22px;border-radius:18px;background:#fff;border:1px solid var(--line);cursor:pointer}.level:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.level b{font-size:25px}.level p{color:var(--muted);margin:5px 0 0}
-.notice{background:#103c25;color:#fff;border-radius:24px;padding:28px;display:flex;justify-content:space-between;gap:20px;align-items:center}.notice p{margin:4px 0;color:#d7ebdf}.notice .btn{background:white;color:#103c25}
-.table-wrap{overflow:auto;background:white;border:1px solid var(--line);border-radius:16px}.course-table{width:100%;border-collapse:collapse;min-width:650px}.course-table th,.course-table td{text-align:left;padding:12px 14px;border-bottom:1px solid #e8f0eb}.course-table th{background:#eef8f1;color:#174b2c;font-size:12px}.course-table td{font-size:14px}.course-table tr:last-child td{border-bottom:0}.semester{margin-top:25px}.semester h3{margin:0 0 10px}
+.notice{background:#10264A;color:#fff;border-radius:24px;padding:28px;display:flex;justify-content:space-between;gap:20px;align-items:center}.notice p{margin:4px 0;color:#E0E7F0}.notice .btn{background:white;color:#10264A}
+.table-wrap{overflow:auto;background:white;border:1px solid var(--line);border-radius:16px}.course-table{width:100%;border-collapse:collapse;min-width:650px}.course-table th,.course-table td{text-align:left;padding:12px 14px;border-bottom:1px solid #E6EAF0}.course-table th{background:#F7F9FC;color:#17365F;font-size:12px}.course-table td{font-size:14px}.course-table tr:last-child td{border-bottom:0}.semester{margin-top:25px}.semester h3{margin:0 0 10px}
 .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:35px;align-items:center}.logos{display:flex;align-items:center;justify-content:center;gap:25px;background:white;border:1px solid var(--line);border-radius:24px;padding:35px}.logos img{width:150px;height:150px;object-fit:contain}
 .contact{display:grid;grid-template-columns:1fr 1fr;gap:18px}.contact .card a{color:var(--green2);font-weight:800}
-footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footerin strong{color:#fff}
-.modal{display:none;position:fixed;inset:0;background:rgba(5,20,12,.65);z-index:50;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{background:#fff;width:min(760px,100%);max-height:90vh;overflow:auto;border-radius:22px;padding:25px}.modalhead{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#eef5f0;border-radius:10px;font-size:20px;padding:6px 10px;cursor:pointer}
-.admin-panel{display:grid;grid-template-columns:220px 1fr;min-height:500px}.admin-side{background:#0c3420;color:#fff;padding:20px}.admin-side button{width:100%;margin:5px 0;text-align:left;background:transparent;color:white;border:1px solid rgba(255,255,255,.12);padding:11px;border-radius:9px;cursor:pointer}.admin-main{padding:24px;background:#f7faf8}.upload-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.upload{border:2px dashed #c9ddd0;border-radius:16px;padding:22px;background:white}.upload input{width:100%;margin-top:12px}
-.hidden{display:none!important}.pill{font-size:11px;font-weight:800;padding:4px 8px;border-radius:99px;background:#fff4d6;color:#785500}
+footer{background:#0A1830;color:#E0E7F0;padding:38px 0}.footerin{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footerin strong{color:#fff}
+.modal{display:none;position:fixed;inset:0;background:rgba(5,20,12,.65);z-index:50;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{background:#fff;width:min(760px,100%);max-height:90vh;overflow:auto;border-radius:22px;padding:25px}.modalhead{display:flex;justify-content:space-between;align-items:center}.close{border:0;background:#F1F4F8;border-radius:10px;font-size:20px;padding:6px 10px;cursor:pointer}
+.admin-panel{display:grid;grid-template-columns:220px 1fr;min-height:500px}.admin-side{background:#10264A;color:#fff;padding:20px}.admin-side button{width:100%;margin:5px 0;text-align:left;background:transparent;color:white;border:1px solid rgba(255,255,255,.12);padding:11px;border-radius:9px;cursor:pointer}.admin-main{padding:24px;background:#F7F9FC}.upload-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.upload{border:2px dashed #D4DBE5;border-radius:16px;padding:22px;background:white}.upload input{width:100%;margin-top:12px}
+.hidden{display:none!important}.pill{font-size:11px;font-weight:800;padding:4px 8px;border-radius:99px;background:#F4EBD3;color:#6D5118}
 @media(max-width:850px){.links{display:none}.menu{display:block}.hero-grid,.about,.contact{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}.levels{grid-template-columns:repeat(2,1fr)}.admin-panel{grid-template-columns:1fr}.admin-side{display:none}}
 @media(max-width:520px){.cards,.levels,.upload-grid{grid-template-columns:1fr}.hero{padding-top:45px}.hero h1{letter-spacing:-1px}.section-head{display:block}.navin{height:68px}.brand img{width:42px;height:42px}}
+
+/* Student result verification: responsive layout and safe overflow handling */
+#student-verification{width:100%;min-width:0;overflow-x:clip}
+#student-verification .wrap{width:100%;min-width:0}
+#student-verification .card{width:100%;min-width:0;margin-inline:auto}
+#studentResultForm{width:100%;min-width:0}
+#studentResultForm label,#studentResultForm input,#studentResultForm select,#studentResultForm button,#studentVerifyMessage{min-width:0;max-width:100%}
+#studentResultForm input,#studentResultForm select,#studentResultForm button{width:100%;box-sizing:border-box}
+#studentResultForm input,#studentResultForm select{overflow-wrap:anywhere}
+#studentVerifiedResult{min-width:0;max-width:100%;overflow-wrap:anywhere}
+#verifiedResultData{max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
+@media(max-width:600px){
+  #student-verification .wrap{padding-left:14px;padding-right:14px}
+  #student-verification .card{max-width:100%!important;padding:18px!important;border-radius:16px!important}
+  #studentResultForm{gap:12px!important}
+  #studentResultForm input,#studentResultForm select{font-size:16px!important;padding:12px!important}
+  #studentResultForm button{white-space:normal;line-height:1.35;padding:13px 12px}
+  #studentVerifiedResult{margin-top:18px!important}
+  #studentVerifiedResult p{overflow-wrap:anywhere}
+  #studentVerifiedResult pre{font-size:14px!important}
+}
+
+/* Full-width mobile viewport correction */
+html,body{width:100%;max-width:100%;margin:0}
+body{overflow-x:hidden}
+nav,header,section,footer,.portal-menu{width:100%;max-width:100%;min-width:0}
+.wrap{width:100%;min-width:0}
+.hero-grid,.hero-grid>* ,.about,.about>*,.contact,.contact>*,.announcement-grid,.announcement-grid>*,
+.cards,.cards>*,.levels,.levels>*,.section-head,.section-head>*{min-width:0;max-width:100%}
+img,video,iframe,embed{max-width:100%}
+@media(max-width:700px){
+ .wrap{padding-left:18px;padding-right:18px}
+ .hero-grid{grid-template-columns:minmax(0,1fr)!important;gap:22px}
+ .hero h1{font-size:clamp(34px,9vw,48px);overflow-wrap:anywhere}
+ .hero p{font-size:17px}
+ .cta{width:100%;gap:10px}
+ .cta .btn{max-width:100%;white-space:normal;text-align:center}
+ .announcement-grid{grid-template-columns:minmax(0,1fr)!important}
+ .announcement-card,.announcement-empty{min-width:0;overflow-wrap:anywhere}
+ .about,.contact{grid-template-columns:minmax(0,1fr)!important}
+ .logos{width:100%;min-width:0;padding:18px;gap:14px}
+ .logos img{width:min(40%,150px);height:auto;aspect-ratio:1;object-fit:contain}
+ .portal-menu{padding:16px 18px}
+}
+/* Premium portal shell and feature-by-feature navigation */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.portal-menu{position:sticky;top:76px;z-index:19;background:rgba(255,255,255,.98);border-bottom:1px solid var(--line);box-shadow:0 18px 36px rgba(17,72,42,.10);padding:22px max(20px,calc((100vw - 1180px)/2))}
+.portal-menu.hidden{display:none!important}
+.portal-menu-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.portal-menu-head strong{display:block;font-size:18px}.portal-menu-head small{display:block;color:var(--muted);margin-top:3px}
+.close-menu{border:1px solid var(--line);background:#F7F9FC;border-radius:10px;font-size:22px;padding:5px 12px;cursor:pointer;color:var(--ink)}
+.portal-menu-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.portal-menu-grid a{display:grid;grid-template-columns:36px minmax(0,1fr);column-gap:10px;align-items:center;background:linear-gradient(145deg,#fff,#F7F9FC);border:1px solid var(--line);border-radius:14px;padding:14px;transition:transform .18s,border-color .18s,box-shadow .18s}
+.portal-menu-grid a:hover,.portal-menu-grid a:focus-visible{transform:translateY(-2px);border-color:#C6A04A;box-shadow:var(--shadow);outline:none}
+.portal-menu-grid a>span{grid-row:span 2;display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#F4EBD3;color:var(--green2);font-size:18px}
+.portal-menu-grid b{font-size:13px}.portal-menu-grid small{font-size:11px;color:var(--muted);line-height:1.35;margin-top:2px}
+body[data-portal-view] > section,body[data-portal-view] > header{display:none}
+body[data-portal-view="home"] #home,body[data-portal-view="home"] #announcements,body[data-portal-view="home"] #about,body[data-portal-view="home"] #contact{display:block}
+body[data-portal-view="announcements"] #announcements,body[data-portal-view="resources"] #resources,body[data-portal-view="courses"] #courses,body[data-portal-view="results"] #results,body[data-portal-view="student-verification"] #student-verification,body[data-portal-view="about"] #about,body[data-portal-view="contact"] #contact{display:block}
+body[data-portal-view] > footer{display:block}
+body[data-portal-view="home"] #announcements{padding:28px 0 42px;background:#fff}
+body[data-portal-view="home"] #announcements .section-head{margin-bottom:16px}
+body[data-portal-view="home"] #announcements .announcement-grid{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+body[data-portal-view]:not([data-portal-view="home"]) > #announcements{padding-top:40px}
+body[data-portal-view="home"] #about,body[data-portal-view="home"] #contact{padding-top:36px;padding-bottom:36px}
+body[data-portal-view="home"] footer{margin-top:20px}
+body[data-portal-view] .hero{min-height:unset}
+@media(max-width:850px){.portal-menu{top:68px;padding:16px}.portal-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.portal-menu-grid a{padding:12px}}
+@media(max-width:520px){.portal-menu-grid{grid-template-columns:1fr}.portal-menu-grid a{grid-template-columns:38px minmax(0,1fr)}.portal-menu{max-height:calc(100vh - 120px);overflow:auto}.portal-menu-head small{max-width:240px}}
+
+
+/* Corporate SCSN palette refinements: navy, white and gold */
+:root{--navy:#10264A;--navy-deep:#0A1830;--gold:#C6A04A;--gold-soft:#F4EBD3;--focus:#C6A04A}
+body{background:#F7F9FC;color:#142238}
+nav{background:rgba(255,255,255,.97)}
+.brand,.section-head h2,.hero h1{color:#142238}
+.hero{background:radial-gradient(circle at 80% 10%,#E4EAF3,transparent 32%),linear-gradient(135deg,#F4F7FB,#fff)}
+.eyebrow,.portal-menu-grid a>span,.announcement-category{background:#F4EBD3;color:#17365F}
+.primary{background:#10264A;color:#fff;box-shadow:0 8px 22px rgba(16,38,74,.20)}
+.primary:hover{background:#17365F}
+.secondary{background:#fff;border:1px solid #DCE2EA;color:#142238}
+.links a:hover,.contact .card a{color:#17365F}
+.announcement-card.pinned{border-color:#C6A04A}
+.pill{background:#F4EBD3;color:#6D5118}
+.notice{background:#10264A}
+footer{background:#0A1830}
+.portal-menu-grid a:hover,.portal-menu-grid a:focus-visible{border-color:#C6A04A}
+#studentVerifyButton:focus-visible,.btn:focus-visible,a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #C6A04A;outline-offset:2px}
+@media(max-width:700px){body{font-size:16px}.hero{padding:38px 0 32px}section{padding:42px 0}.section-head h2{font-size:28px}}
+
+
+/* Department history presentation */
+.history-placeholder{margin-top:24px;padding:24px;border:1px solid #DCE2EA;border-left:4px solid #C6A04A;border-radius:16px;background:linear-gradient(145deg,#fff,#FBFCFE)}
+.history-placeholder>h3{margin:22px 0 8px;color:#10264A;font-size:21px}
+.history-placeholder>h3:first-of-type{margin-top:14px}
+.history-placeholder p{line-height:1.75}
+.history-timeline{display:grid;gap:0;margin:18px 0 24px;padding-left:18px;border-left:2px solid #E6D6AC}
+.history-milestone{position:relative;padding:0 0 22px 18px}
+.history-milestone:last-child{padding-bottom:0}
+.history-milestone:before{content:"";position:absolute;left:-25px;top:6px;width:11px;height:11px;border-radius:50%;background:#C6A04A;border:3px solid #fff;box-shadow:0 0 0 1px #C6A04A}
+.history-year{display:inline-block;color:#6D5118;background:#F4EBD3;border-radius:99px;padding:4px 10px;font-size:12px;font-weight:850;letter-spacing:.02em}
+.history-milestone h4,.history-subsection h4{color:#17365F;margin:9px 0 5px;font-size:16px}
+.history-milestone p,.history-subsection p{margin:0;color:#526176}
+.history-subsection{padding:15px 0;border-top:1px solid #E6EAF0}
+.history-subsection h4{margin-top:0}
+.history-review-note{margin-top:18px!important;padding:13px 15px;border-radius:10px;background:#F7F9FC;border:1px solid #E6EAF0;font-size:13px}
+@media(max-width:600px){.history-placeholder{padding:17px}.history-placeholder>h3{font-size:19px}.history-timeline{padding-left:13px}.history-milestone{padding-left:14px}.history-milestone:before{left:-20px}}
+/* Official department history placeholder and polished action states */
+.history-placeholder{margin-top:24px;padding:20px;border:1px solid #DCE2EA;border-left:4px solid #C6A04A;border-radius:14px;background:#fff}
+.history-placeholder .history-label{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.09em;color:#17365F;background:#F4EBD3;padding:5px 9px;border-radius:99px}
+.history-placeholder h3{margin:12px 0 6px;color:#10264A}
+.history-placeholder p{margin:0;color:#526176}
+.btn{transition:transform .16s ease,background-color .16s ease,box-shadow .16s ease}
+.btn:active{transform:translateY(1px)}
+.portal-menu-grid a:focus-visible{outline:3px solid #C6A04A;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.portal-menu-grid a{transition:none}}
+
 </style>
 </head>
 <body>
 <nav><div class="wrap navin">
-<a class="brand" href="#home"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div>SCSN ADUSTECH<small>WUDIL CHAPTER</small></div></a>
-<div class="links"><a href="#announcements">Announcements</a><a href="#resources">Resources</a><a href="#results">Results</a><a href="#student-verification">Verify Result</a><a href="#courses">Courses</a><a href="#about">About</a><a href="#contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
-<button class="menu" onclick="document.querySelector('.links').style.display='flex'">☰</button>
+<a class="brand" href="#home" data-portal-page="home"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div>SCSN ADUSTECH<small>WUDIL CHAPTER</small></div></a>
+<div class="links"><a href="#announcements" data-portal-page="announcements">Announcements</a><a href="#resources" data-portal-page="resources">Resources</a><a href="#results" data-portal-page="results">Results</a><a href="#student-verification" data-portal-page="student-verification">Verify Result</a><a href="#courses" data-portal-page="courses">Courses</a><a href="#about" data-portal-page="about">About</a><a href="#contact" data-portal-page="contact">Contact</a><button class="btn secondary" onclick="openAdmin()">Admin</button></div>
+<button class="menu" id="menuToggle" aria-expanded="false" aria-controls="portalMenu">☰ <span class="sr-only">Open portal menu</span></button>
 </div></nav>
-
-<header id="home" class="hero"><div class="wrap hero-grid">
-<div><span class="eyebrow">🧪 Chemistry students' academic hub</span><h1>Learn. Share. <span>Grow.</span></h1>
-<p>Students' Chemical Society of Nigeria (SCSN), ADUSTECH Wudil Chapter — a simple home for chemistry resources, course information and chapter updates.</p>
-<p><b>Motto:</b> Chemistry reshape the nature</p>
-<div class="cta"><a class="btn primary" href="#resources">Find resources</a><a class="btn secondary" href="#courses">Browse courses</a></div></div>
-<div class="hero-card"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><h3>SCSN ADUSTECH Chapter</h3><p>Aliko Dangote University of Science and Technology, Wudil</p></div>
-</div></header>
+<div id="portalMenu" class="portal-menu hidden" aria-label="Portal features"><div class="portal-menu-head"><div><strong>Explore SCSN Portal</strong><small>Select a feature to open its dedicated page.</small></div><button type="button" class="close-menu" id="closePortalMenu" aria-label="Close menu">×</button></div><div class="portal-menu-grid"><a href="#home" data-portal-page="home"><span>⌂</span><b>Home</b><small>Chapter overview</small></a><a href="#resources" data-portal-page="resources"><span>📚</span><b>Academic Resources</b><small>Notes, past questions & more</small></a><a href="#courses" data-portal-page="courses"><span>🧪</span><b>Course Catalogue</b><small>100–400 Level</small></a><a href="#results" data-portal-page="results"><span>🔐</span><b>Examination Results</b><small>Existing protected results</small></a><a href="#student-verification" data-portal-page="student-verification"><span>✓</span><b>Verify Student Result</b><small>Published batches</small></a><a href="#announcements" data-portal-page="announcements"><span>📢</span><b>Announcements</b><small>Chapter updates</small></a><a href="#about" data-portal-page="about"><span>🏛</span><b>About the Chapter</b><small>Identity & overview</small></a><a href="#contact" data-portal-page="contact"><span>☎</span><b>Chapter Contacts</b><small>Contact information</small></a><a href="admin.html"><span>⚙</span><b>Admin Dashboard</b><small>Executive sign-in</small></a></div></div>
 
 <section id="announcements"><div class="wrap">
 <div class="section-head"><div><h2>📢 SCSN Announcements</h2><p>Latest notices and updates from the chapter.</p></div></div>
 <div id="announcementList" class="announcement-grid"><div class="announcement-empty">Loading announcements…</div></div>
 </div></section>
+
+<header id="home" class="hero"><div class="wrap hero-grid">
+<div><span class="eyebrow">🧪 Chemistry students' academic hub</span><h1>Learn. Share. <span>Grow.</span></h1>
+<p>Students' Chemical Society of Nigeria (SCSN), ADUSTECH Wudil Chapter — a simple home for chemistry resources, course information and chapter updates.</p>
+<p><b>Motto:</b> Chemistry reshape the nature</p>
+<div class="cta"><a class="btn primary" href="#resources" data-portal-page="resources">Find resources</a><a class="btn secondary" href="#courses" data-portal-page="courses">Browse courses</a></div></div>
+<div class="hero-card"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><h3>SCSN ADUSTECH Chapter</h3><p>Aliko Dangote University of Science and Technology, Wudil</p></div>
+</div></header>
+
+
 
 <section id="resources"><div class="wrap">
 <div class="section-head"><div><h2>Student Resources</h2><p>Search by course code, course title or resource type.</p></div></div>
@@ -99,7 +219,7 @@ footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;ju
 <p><strong>Registration number:</strong> <span id="verifiedStudentReg"></span></p>
 <p><strong>Result:</strong> <span id="verifiedResultTitle"></span></p>
 <p><strong>Level / semester / session:</strong> <span id="verifiedResultMeta"></span></p>
-<div style="background:#f5faf7;border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto"><pre id="verifiedResultData" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;margin:0"></pre></div>
+<div style="background:#F7F9FC;border:1px solid var(--line);border-radius:12px;padding:14px;overflow:auto"><pre id="verifiedResultData" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;margin:0"></pre></div>
 <p class="muted" style="font-size:12px">Keep your result details private. This page does not provide a download button.</p>
 </div>
 </div>
@@ -116,7 +236,7 @@ footer{background:#092416;color:#d8e9df;padding:38px 0}.footerin{display:flex;ju
 
 <section id="about"><div class="wrap about">
 <div class="logos"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><img src="assets/adustech-logo.jpeg" alt="ADUSTECH logo"></div>
-<div><h2>About the Chapter</h2><p>SCSN ADUSTECH Wudil Chapter supports chemistry students with an accessible academic resource hub and chapter information.</p><p><b>President:</b> Sen. Ahmad Muhammad Jaji (Sen. Jaji)</p><p><b>University:</b> Aliko Dangote University of Science and Technology, Wudil</p><p><b>Motto:</b> Chemistry reshape the nature</p></div>
+<div><h2>About the Chapter</h2><p>SCSN ADUSTECH Wudil Chapter supports chemistry students with an accessible academic resource hub and chapter information.</p><p><b>President:</b> Sen. Ahmad Muhammad Jaji (Sen. Jaji)</p><p><b>University:</b> Aliko Dangote University of Science and Technology, Wudil</p><p><b>Motto:</b> Chemistry reshape the nature</p><div class="history-placeholder"><span class="history-label">DEPARTMENT HISTORY</span><h3>History of the Department of Chemistry</h3><p>The Department of Chemistry forms part of the science-based academic development of Aliko Dangote University of Science and Technology, Wudil. Its story is connected to the establishment and growth of the university.</p><div class="history-timeline"><article class="history-milestone"><span class="history-year">1988–1991</span><h4>Early Planning and Establishment</h4><p>The university’s establishment process dates back to 1988, when the Kano State Government constituted a task force chaired by Professor Ibrahim H. Umar to consider a state-owned university focused on science and technology. A technical committee was subsequently established to examine the recommendations, and an implementation committee followed in 1991.</p></article><article class="history-milestone"><span class="history-year">April 2001</span><h4>Commencement of Academic Activities</h4><p>After administrative and financial delays, the university commenced academic activities in April 2001. Its initial academic structure included the Faculty of Agriculture and Agricultural Technology and the Faculty of Science and Science Education (FASSE), within which core scientific disciplines, including Chemistry, contributed to its academic mission.</p></article><article class="history-milestone"><span class="history-year">2005–2007</span><h4>Accreditation and Academic Development</h4><p>The information supplied for this history records interim accreditation for the Chemistry programme in 2005 and full accreditation in 2007 by the National Universities Commission (NUC). These milestones represent important stages in the programme’s academic development.</p></article><article class="history-milestone"><span class="history-year">2022</span><h4>Institutional Renaming</h4><p>In 2022, Kano University of Science and Technology (KUST), Wudil, was renamed Aliko Dangote University of Science and Technology (ADUSTECH), Wudil, by the Kano State Government. The institution continues to focus on science, technology, innovation and applied learning.</p></article></div><h3>Academic Growth and Development</h3><div class="history-subsection"><h4>Academic Programmes</h4><p>The information provided identifies B.Sc. Chemistry and B.Sc. (Ed.) Chemistry among the Chemistry-related programmes. Current official programme titles and availability should be confirmed against the department’s approved curriculum.</p></div><div class="history-subsection"><h4>Academic Staff and Leadership</h4><p>The names supplied for this historical account include Professor Ibrahim U. Kutama and Dr. Ibrahim Isah Fagge. Their affiliations, academic titles and specific contributions should be confirmed by the Department before this profile is treated as a complete official record.</p></div><div class="history-subsection"><h4>Student Achievements</h4><p>The information supplied highlights reported first-class graduates in Chemistry and Chemistry Education, including Usman Idris Miga and Izilmasi Muhammad Ya’u. These names and distinctions can be updated or confirmed using official departmental records.</p></div><div class="history-subsection"><h4>Innovation and Research</h4><p>The account provided refers to water-powered cooking-stove innovations associated with Chemistry graduates and presentations at national science exhibitions. Further documentation would help identify the innovators, describe the technology accurately and record the relevant exhibitions.</p></div><h3>Continuing Legacy</h3><p>The Department of Chemistry is part of ADUSTECH Wudil’s broader commitment to science education, research and technological development. Its continuing mission includes building scientific knowledge, practical skills and opportunities for students to contribute to society.</p><p class="history-review-note"><b>Historical record:</b> This profile is a working account based on information supplied for the SCSN portal. Departmental additions and corrections can be incorporated when provided.</p></div></div>
 </div></section>
 
 <section id="contact"><div class="wrap"><div class="section-head"><div><h2>Contact</h2><p>Chapter contact details supplied for the website.</p></div></div>
@@ -235,7 +355,30 @@ async function loadAnnouncements(){
   box.innerHTML=data.map(a=>`<article class="announcement-card ${a.is_pinned?'pinned':''}">${a.is_pinned?'<span class="pill">📌 Important</span><br>':''}<span class="announcement-category">${esc(a.category||'General')}</span><h3>${esc(a.title)}</h3><div class="announcement-meta">${announcementDate(a.created_at)}</div><p style="white-space:pre-wrap;margin-bottom:0">${esc(a.content)}</p></article>`).join('');
 }
 
+
+function setPortalView(view,updateHash=true){
+ const valid=['home','announcements','resources','courses','results','student-verification','about','contact'];
+ if(!valid.includes(view))view='home';
+ document.body.setAttribute('data-portal-view',view);
+ const menu=document.getElementById('portalMenu'),toggle=document.getElementById('menuToggle');
+ if(menu)menu.classList.add('hidden');
+ if(toggle)toggle.setAttribute('aria-expanded','false');
+ if(updateHash&&location.hash!=='#'+view)history.pushState({portalView:view},'','#'+view);
+ window.scrollTo({top:0,behavior:'auto'});
+}
+document.addEventListener('click',function(e){
+ const link=e.target.closest('[data-portal-page]');
+ if(link){e.preventDefault();setPortalView(link.dataset.portalPage);return;}
+});
+document.getElementById('menuToggle').addEventListener('click',function(){
+ const menu=document.getElementById('portalMenu');const open=menu.classList.contains('hidden');
+ menu.classList.toggle('hidden',!open);this.setAttribute('aria-expanded',String(open));
+});
+document.getElementById('closePortalMenu').addEventListener('click',function(){document.getElementById('portalMenu').classList.add('hidden');document.getElementById('menuToggle').setAttribute('aria-expanded','false');});
+window.addEventListener('popstate',function(){setPortalView((location.hash||'#home').slice(1),false);});
+
 document.getElementById('year').textContent=new Date().getFullYear();
+setPortalView((location.hash||'#home').slice(1),false);
 loadResources();loadExamResults();loadAnnouncements();loadStudentResultBatches();
 window.onclick=e=>{if(e.target.classList.contains('modal'))e.target.classList.remove('show')}
 </script>
