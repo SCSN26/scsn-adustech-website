@@ -1,144 +1,15 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SCSN Admin</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script><script src="config.js"></script><style>body{font-family:system-ui;margin:0;background:#f5faf7;color:#10231a}.wrap{max-width:1100px;margin:auto;padding:20px}.card{background:#fff;border:1px solid #dce9e1;border-radius:16px;padding:20px;margin:15px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.form{display:grid;gap:10px}.form input,.form select,.form textarea{padding:12px;border:1px solid #dce9e1;border-radius:9px;font:inherit}.btn{padding:11px 15px;border:0;border-radius:9px;font-weight:800;cursor:pointer}.primary{background:#159447;color:#fff}.danger{background:#ffe8e8;color:#9b2222}.hidden{display:none}.item{border-top:1px solid #e5eee8;padding:13px 0;display:flex;justify-content:space-between;gap:15px}.muted{color:#65756d;font-size:14px}.note{background:#eef8f1;border:1px solid #cfe6d7;padding:12px;border-radius:10px;font-size:14px}.checkrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.checkrow label{display:flex;gap:7px;align-items:center}.checkrow input{width:auto}.announcement-actions{display:flex;gap:8px;flex-wrap:wrap}.announcement-actions button{margin-top:8px}@media(max-width:700px){.grid{grid-template-columns:1fr}.item{display:block}.item button{margin-top:8px}}</style></head><body><div class="wrap"><p><a href="index.html">Back to Public Site</a></p><div id="login" class="card"><h1>Admin sign in</h1><p class="muted">Enter your assigned Admin ID and existing password.</p><div class="form"><input id="adminId" type="text" placeholder="Enter your Admin ID" autocomplete="username"><input id="pass" type="password" placeholder="Enter your password" autocomplete="current-password"><button class="btn primary" onclick="login()">Sign in</button></div><p id="msg"></p></div><div id="dash" class="hidden"><button class="btn" onclick="logout()">Sign out</button><div class="grid"><div class="card"><h2>Upload resource</h2><div class="form"><input id="title" placeholder="Title *"><input id="code" placeholder="Course code (e.g. CHM 1211)"><input id="ctitle" placeholder="Course title"><select id="level"><option value="">Level</option><option>100</option><option>200</option><option>300</option><option>400</option></select><select id="type"><option>Past Examination Questions</option><option>Lecture Notes</option><option>Tutorials</option><option>Practical / Laboratory</option><option>Seminar Materials</option><option>Textbooks / References</option><option>Past Project Materials</option><option>SCSN Publications</option><option>Other</option></select><textarea id="desc" placeholder="Description"></textarea><input id="file" type="file"><div id="fileName" class="muted">No file selected</div><button class="btn primary" id="uploadBtn" onclick="upload()">Save &amp; Upload Resource</button></div><p id="upmsg"></p></div><div class="card"><h2>Anything not supplied?</h2><p class="muted">Use the upload field to add it later. The normal resource files remain downloadable by students.</p></div></div>
-<div class="card" id="announcementManager">
-<h2>📢 Manage Announcements</h2>
-<p class="muted">Publish a notice here and it will appear on the public homepage. Only published announcements are visible to students.</p>
-<form class="form" id="announcementForm" onsubmit="saveAnnouncement(event)">
-<input type="hidden" id="announcementId">
-<input id="announcementTitle" maxlength="160" placeholder="Announcement title *" required>
-<select id="announcementCategory"><option>General</option><option>Meeting</option><option>Academic</option><option>Examination</option><option>Event</option><option>Important Notice</option></select>
-<textarea id="announcementContent" rows="5" placeholder="Write the announcement message *" required></textarea>
-<div class="checkrow"><label><input id="announcementPinned" type="checkbox"> Pin as important</label><label><input id="announcementPublished" type="checkbox" checked> Publish now</label></div>
-<div class="announcement-actions"><button class="btn primary" id="announcementSaveBtn" type="submit">Publish Announcement</button><button class="btn" type="button" onclick="resetAnnouncementForm()">Clear Form</button></div>
-</form>
-<p id="announcementMsg" role="status"></p>
-<hr style="border:0;border-top:1px solid #e5eee8;margin:22px 0">
-<h3>Existing announcements</h3><div id="announcementAdminList">Loading announcements…</div>
-</div>
-<div class="card" id="studentResultManager"><h2>🎓 Student Result Verification Manager</h2><div class="note">Separate from the existing encrypted examination-results manager below. Upload a CSV or Excel (.xlsx) file containing reg_no, jamb_no, student_name, and any result columns (for example, CGPA, total_score, grade). Keep the first three columns exactly named. Excel files use the first worksheet. Batch is created unpublished by default; review it before publishing.</div><div class="form" style="margin-top:14px"><input id="svTitle" placeholder="Batch title (e.g. 200 Level First Semester 2025/2026) *"><div class="grid"><select id="svType"><option value="semester">Semester Result</option><option value="cumulative">Cumulative Result</option></select><select id="svLevel"><option value="">Level *</option><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option></select></div><div class="grid"><select id="svSemester"><option value="">Semester</option><option>First Semester</option><option>Second Semester</option></select><input id="svSession" placeholder="Academic session (e.g. 2025/2026) *"></div><div class="grid"><label>Expiry date <input id="svExpiry" type="date" required></label><input id="svCsv" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /></div><div id="svFileName" class="muted">No CSV or Excel file selected</div><label><input id="svPublish" type="checkbox"> Publish immediately after successful import</label><button class="btn primary" id="svImportBtn" onclick="importStudentResults()">Import CSV &amp; Create Batch</button></div><p id="svMsg" role="status"></p><hr style="border:0;border-top:1px solid #e5eee8;margin:22px 0"><h3>Verification batches</h3><button class="btn" onclick="listStudentBatches()">Refresh batches</button><div id="svBatchList">Sign in to load batches.</div></div>
-<div class="card"><h2>Upload Examination Result</h2><div class="note">Result files are encrypted in this browser before upload. Students must enter the exact password to decrypt and view them. There is no student download button. After expiry, the result disappears from the public site but remains here until you permanently delete it.</div><div class="form" style="margin-top:14px"><input id="rtitle" placeholder="Result title (e.g. 200 Level First Semester Result 2025/2026) *"><div class="grid"><select id="rlevel"><option value="">Level *</option><option>100</option><option>200</option><option>300</option><option>400</option></select><select id="rsemester"><option value="">Semester</option><option>First Semester</option><option>Second Semester</option></select></div><input id="rsession" placeholder="Academic session (e.g. 2025/2026)"><div class="grid"><select id="rdays"><option value="14">Expire after 14 days</option><option value="21">Expire after 21 days</option></select><input id="rpass" type="password" placeholder="Result password *"></div><input id="rfile" type="file" accept="application/pdf,image/*"><div id="rfileName" class="muted">No result file selected</div><button class="btn primary" id="rUploadBtn" onclick="uploadResult()">Encrypt &amp; Publish Result</button></div><p id="rmsg"></p></div><div class="card"><h2>Active &amp; expired results</h2><p class="muted">Expired results are no longer visible to students. Delete them here when you are ready.</p><div id="resultList">Loading...</div></div><div class="card"><h2>Resources</h2><div id="list">Loading...</div></div></div></div><script>const sb=supabase.createClient(SCSN_CONFIG.supabaseUrl,SCSN_CONFIG.supabasePublishableKey);const $=x=>document.getElementById(x);const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));async function login(){const adminId=$('adminId').value.trim().toUpperCase();if(adminId!=='SCSN-ADMIN-001'){$('msg').textContent='Invalid Admin ID or password.';return}const {error}=await sb.auth.signInWithPassword({email:'ahmadmuhammadjaji66@gmail.com',password:$('pass').value});$('msg').textContent=error?'Invalid Admin ID or password.':'';if(!error)show()}async function logout(){await sb.auth.signOut();show()}async function show(){const {data:{session}}=await sb.auth.getSession();$('login').classList.toggle('hidden',!!session);$('dash').classList.toggle('hidden',!session);if(session){list();listResults();listAnnouncements();listStudentBatches()}}$('file').addEventListener('change',()=>{$('fileName').textContent=$('file').files[0]?`Selected: ${$('file').files[0].name}`:'No file selected'});$('rfile').addEventListener('change',()=>{$('rfileName').textContent=$('rfile').files[0]?`Selected: ${$('rfile').files[0].name}`:'No result file selected'});$('svCsv').addEventListener('change',()=>{$('svFileName').textContent=$('svCsv').files[0]?`Selected: ${$('svCsv').files[0].name}`:'No CSV or Excel file selected'});
-async function upload(){const f=$('file').files[0];if(!f||!$('title').value.trim())return $('upmsg').textContent='Title and file are required.';const {data:{user}}=await sb.auth.getUser();const path=`${new Date().getFullYear()}/${crypto.randomUUID()}-${f.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;$('upmsg').textContent='Uploadingâ¦';const up=await sb.storage.from('scsn-resources').upload(path,f);if(up.error)return $('upmsg').textContent=up.error.message;const ins=await sb.from('resources').insert({title:$('title').value.trim(),description:$('desc').value.trim(),course_code:$('code').value.trim()||null,course_title:$('ctitle').value.trim()||null,level:$('level').value?Number($('level').value):null,resource_type:$('type').value,file_path:path,file_name:f.name,file_size:f.size,uploaded_by:user.id});if(ins.error){await sb.storage.from('scsn-resources').remove([path]);return $('upmsg').textContent=ins.error.message}$('upmsg').textContent='Uploaded successfully.';$('title').value='';$('code').value='';$('ctitle').value='';$('desc').value='';$('file').value='';$('fileName').textContent='No file selected';list()}
-async function list(){const {data,error}=await sb.from('resources').select('*').order('created_at',{ascending:false});if(error)return $('list').textContent=error.message;if(!data.length)return $('list').innerHTML='<p class="muted">No resources yet.</p>';$('list').innerHTML=data.map(r=>`<div class="item"><div><b>${esc(r.title)}</b><div class="muted">${esc(r.course_code||'')} | ${esc(r.resource_type)} | ${r.downloads} downloads</div></div><button class="btn danger" onclick="del('${r.id}','${r.file_path.replace(/'/g,"\\'")}')">Delete</button></div>`).join('')}
-async function del(id,path){if(!confirm('Delete this resource?'))return;await sb.storage.from('scsn-resources').remove([path]);await sb.from('resources').delete().eq('id',id);list()}
-function b64(bytes){let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin)}async function deriveKey(password,salt){const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(password),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:200000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['encrypt'])}
-async function uploadResult(){const f=$('rfile').files[0],title=$('rtitle').value.trim(),password=$('rpass').value;if(!f||!title||!$('rlevel').value||!password)return $('rmsg').textContent='Result title, level, password and file are required.';if(password.length<4)return $('rmsg').textContent='Use a password of at least 4 characters.';if(f.size>25*1024*1024)return $('rmsg').textContent='Please keep result files under 25 MB.';const {data:{user}}=await sb.auth.getUser();const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12));$('rUploadBtn').disabled=true;$('rmsg').textContent='Encrypting result in this browserâ¦';try{const key=await deriveKey(password,salt);const plain=await f.arrayBuffer();const encrypted=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain);const path=`${new Date().getFullYear()}/${crypto.randomUUID()}.bin`;const up=await sb.storage.from('scsn-results').upload(path,new Blob([encrypted],{type:'application/octet-stream'}),{contentType:'application/octet-stream',upsert:false});if(up.error)throw up.error;const expires=new Date(Date.now()+Number($('rdays').value)*86400000).toISOString();const {data:id,error}=await sb.rpc('create_exam_result',{result_title:title,result_level:Number($('rlevel').value),result_semester:$('rsemester').value||null,result_session:$('rsession').value.trim()||null,result_file_path:path,result_file_name:f.name,result_file_size:f.size,result_mime_type:f.type||'application/pdf',result_salt:b64(salt),result_iv:b64(iv),result_password:password,result_expires_at:expires});if(error)throw error;$('rmsg').textContent='Result encrypted and published successfully.';$('rtitle').value='';$('rsemester').value='';$('rsession').value='';$('rpass').value='';$('rfile').value='';$('rfileName').textContent='No result file selected';listResults()}catch(e){console.error(e);try{if(typeof path!=='undefined')await sb.storage.from('scsn-results').remove([path])}catch(_){}$('rmsg').textContent=e.message||'Upload failed.'}finally{$('rUploadBtn').disabled=false}}
-async function listResults(){const {data,error}=await sb.rpc('list_exam_results_admin');if(error)return $('resultList').textContent=error.message;if(!data.length)return $('resultList').innerHTML='<p class="muted">No results uploaded.</p>';$('resultList').innerHTML=data.map(r=>`<div class="item"><div><b>${esc(r.title)}</b><div class="muted">${r.level} Level | ${esc([r.session,r.semester].filter(Boolean).join(' | '))} | Expires ${new Date(r.expires_at).toLocaleDateString()}</div></div><button class="btn danger" onclick="deleteResult('${r.id}','${r.file_path.replace(/'/g,"\\'")}')">Permanently Delete</button></div>`).join('')}
-async function deleteResult(id,path){
-  if(!confirm('Permanently delete this result? Students will no longer be able to view it.'))return;
-
-  try{
-    const {error:storageError}=await sb.storage
-      .from('scsn-results')
-      .remove([path]);
-
-    if(storageError){
-      throw new Error('File deletion failed: '+storageError.message);
-    }
-
-    const {data:message,error:dbError}=await sb.rpc(
-      'delete_exam_result',
-      {result_id:id}
-    );
-
-    if(dbError){
-      throw new Error('Database deletion failed: '+dbError.message);
-    }
-
-    if(message && message.toLowerCase().includes('error')){
-      throw new Error(message);
-    }
-
-    alert('Examination result permanently deleted.');
-    await listResults();
-
-  }catch(error){
-    alert('Deletion failed: '+error.message);
-    console.error('Result deletion error:',error);
-  }
-}
-
-let editingAnnouncementId=null;
-function resetAnnouncementForm(){
-  editingAnnouncementId=null;
-  $('announcementForm').reset();
-  $('announcementId').value='';
-  $('announcementPublished').checked=true;
-  $('announcementSaveBtn').textContent='Publish Announcement';
-  $('announcementMsg').textContent='';
-}
-async function listAnnouncements(){
-  const box=$('announcementAdminList');
-  const {data,error}=await sb.from('announcements').select('*').order('created_at',{ascending:false});
-  if(error){box.textContent='Could not load announcements: '+error.message;return}
-  if(!data||!data.length){box.innerHTML='<p class="muted">No announcements yet. Use the form above to create the first one.</p>';return}
-  box.innerHTML=data.map(a=>`<div class="item"><div><b>${esc(a.title)}</b><div class="muted">${esc(a.category||'General')} · ${a.is_published?'Published':'Draft'}${a.is_pinned?' · 📌 Pinned':''} · ${new Date(a.created_at).toLocaleDateString()}</div><div style="white-space:pre-wrap;margin-top:5px">${esc(a.content)}</div></div><div class="announcement-actions"><button class="btn" onclick="editAnnouncement('${a.id}')">Edit</button><button class="btn" onclick="toggleAnnouncementPublished('${a.id}',${!a.is_published})">${a.is_published?'Unpublish':'Publish'}</button><button class="btn danger" onclick="deleteAnnouncement('${a.id}')">Delete</button></div></div>`).join('');
-}
-async function saveAnnouncement(event){
-  event.preventDefault();
-  const title=$('announcementTitle').value.trim(),content=$('announcementContent').value.trim();
-  if(!title||!content){$('announcementMsg').textContent='Title and message are required.';return}
-  const {data:{user},error:userError}=await sb.auth.getUser();
-  if(userError||!user){$('announcementMsg').textContent='Please sign in again before saving.';return}
-  const payload={title,content,category:$('announcementCategory').value,is_pinned:$('announcementPinned').checked,is_published:$('announcementPublished').checked,updated_at:new Date().toISOString()};
-  $('announcementSaveBtn').disabled=true;
-  $('announcementMsg').textContent=editingAnnouncementId?'Saving changes…':'Publishing announcement…';
-  try{
-    let result;
-    if(editingAnnouncementId){
-      result=await sb.from('announcements').update(payload).eq('id',editingAnnouncementId);
-    }else{
-      payload.created_by=user.id;
-      result=await sb.from('announcements').insert(payload);
-    }
-    if(result.error)throw result.error;
-    $('announcementMsg').textContent=editingAnnouncementId?'Announcement updated successfully.':'Announcement saved successfully.';
-    resetAnnouncementForm();
-    await listAnnouncements();
-  }catch(e){
-    console.error('Announcement save failed:',e);
-    $('announcementMsg').textContent='Could not save announcement: '+(e.message||'Unknown error');
-  }finally{$('announcementSaveBtn').disabled=false}
-}
-async function editAnnouncement(id){
-  const {data,error}=await sb.from('announcements').select('*').eq('id',id).single();
-  if(error){$('announcementMsg').textContent='Could not open announcement: '+error.message;return}
-  editingAnnouncementId=id;
-  $('announcementId').value=id;
-  $('announcementTitle').value=data.title||'';
-  $('announcementCategory').value=data.category||'General';
-  $('announcementContent').value=data.content||'';
-  $('announcementPinned').checked=!!data.is_pinned;
-  $('announcementPublished').checked=!!data.is_published;
-  $('announcementSaveBtn').textContent='Save Changes';
-  $('announcementMsg').textContent='Editing: '+data.title;
-  $('announcementManager').scrollIntoView({behavior:'smooth',block:'start'});
-}
-async function toggleAnnouncementPublished(id,published){
-  const {error}=await sb.from('announcements').update({is_published:published,updated_at:new Date().toISOString()}).eq('id',id);
-  if(error){alert('Could not update announcement: '+error.message);return}
-  await listAnnouncements();
-}
-async function deleteAnnouncement(id){
-  if(!confirm('Delete this announcement permanently?'))return;
-  const {error}=await sb.from('announcements').delete().eq('id',id);
-  if(error){alert('Could not delete announcement: '+error.message);return}
-  if(editingAnnouncementId===id)resetAnnouncementForm();
-  await listAnnouncements();
-}
-
-
-// Student Result Verification Manager — server-side admin function only; no service-role key in browser.
-$('svCsv')?.addEventListener('change',()=>{$('svFileName').textContent=$('svCsv').files[0]?`Selected: ${$('svCsv').files[0].name}`:'No CSV selected'});
-function parseCSV(text){const rows=[];let row=[],field='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c==='"'&&text[i+1]==='"'){field+='"';i++}else if(c==='"'){quoted=false}else field+=c}else if(c==='"'){quoted=true}else if(c===','){row.push(field);field=''}else if(c==='\n'){row.push(field.replace(/\r$/,''));rows.push(row);row=[];field=''}else field+=c}if(quoted)throw new Error('CSV contains an unclosed quote.');if(field.length||row.length){row.push(field.replace(/\r$/,''));rows.push(row)}return rows.filter(r=>r.some(v=>String(v).trim()!==''))}
-async function studentAdminCall(payload){const {data:{session}}=await sb.auth.getSession();if(!session)throw new Error('Your admin session has expired. Sign in again.');const {data,error}=await sb.functions.invoke('scsn-result-admin',{body:payload});if(error)throw new Error(error.message||'Admin function request failed.');if(data?.error)throw new Error(data.error);return data}
-async function importStudentResults(){const file=$('svCsv').files[0];if(!file)return $('svMsg').textContent='Please select a CSV or Excel (.xlsx) file.';if(!$('svTitle').value.trim()||!$('svLevel').value||!$('svSession').value.trim()||!$('svExpiry').value)return $('svMsg').textContent='Batch title, level, session and expiry date are required.';if(file.size>10*1024*1024)return $('svMsg').textContent='File must be 10 MB or smaller.';const isXlsx=/\.xlsx$/i.test(file.name);if(!isXlsx&&!/\.csv$/i.test(file.name))return $('svMsg').textContent='Unsupported file type. Choose a .csv or .xlsx file.';const btn=$('svImportBtn');btn.disabled=true;$('svMsg').textContent=isXlsx?'Reading and validating Excel workbook…':'Reading and validating CSV…';try{let rows;if(isXlsx){if(typeof XLSX==='undefined')throw new Error('Excel reader failed to load. Refresh the page and try again.');const workbook=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:false});const firstSheet=workbook.SheetNames[0];if(!firstSheet)throw new Error('Excel workbook has no worksheets.');rows=XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet],{header:1,defval:'',raw:false});}else{rows=parseCSV(await file.text())}if(rows.length<2)throw new Error('File must contain a header row and at least one student row.');const normalizeHeader=h=>String(h??'').toLowerCase().replace(/[^a-z0-9]/g,'');const aliases={reg_no:['regno','registrationnumber','regnumber'],jamb_no:['jambno','jambregistrationnumber'],student_name:['studentname','name']};const headerRowIndex=rows.findIndex((r,i)=>i<30&&['reg_no','jamb_no','student_name'].every(k=>r.some(cell=>aliases[k].includes(normalizeHeader(cell)))));if(headerRowIndex<0)throw new Error('Could not find a header row containing Registration Number, JAMB Number and Name in the first 30 rows. Check the worksheet headings.');const headers=rows[headerRowIndex].map(h=>String(h??'').trim());const index={};headers.forEach((h,i)=>{const normalized=normalizeHeader(h);for(const [canonical,names] of Object.entries(aliases)){if(names.includes(normalized))index[canonical]=i;}if(!index[h.toLowerCase()])index[h.toLowerCase()]=i});for(const required of ['reg_no','jamb_no','student_name'])if(index[required]===undefined)throw new Error(`Missing required column: ${required}`);const seen=new Set();const dataRows=rows.slice(headerRowIndex+1).map((r,n)=>({r,sourceRow:headerRowIndex+n+2})).filter(x=>x.r.some(v=>String(v??'').trim()!==''));const invalidIdentityRows=dataRows.filter(({r})=>!String(r[index.reg_no]||'').trim()||!String(r[index.student_name]||'').trim());if(invalidIdentityRows.length){const preview=invalidIdentityRows.slice(0,8).map(x=>x.sourceRow).join(', ');throw new Error(`${invalidIdentityRows.length} row(s) are missing a registration number or student name (worksheet row(s): ${preview}${invalidIdentityRows.length>8?', …':''}). Correct these rows and retry; no records were uploaded.`)}const skippedNoJamb=dataRows.filter(({r})=>!String(r[index.jamb_no]||'').trim());const eligibleRows=dataRows.filter(({r})=>String(r[index.reg_no]||'').trim()&&String(r[index.jamb_no]||'').trim()&&String(r[index.student_name]||'').trim());if(!eligibleRows.length)throw new Error('No eligible student records found: every record is missing a JAMB number. Nothing was uploaded.');const students=eligibleRows.map(({r,sourceRow})=>{const reg=String(r[index.reg_no]||'').trim().toUpperCase(),jamb=String(r[index.jamb_no]||'').trim().toUpperCase(),name=String(r[index.student_name]||'').trim();const key=reg+'|'+jamb;if(seen.has(key))throw new Error(`Duplicate registration/JAMB pair at row ${sourceRow}.`);seen.add(key);const result={};headers.forEach((h,i)=>{if(!['reg_no','jamb_no','student_name','s/n','sn','index'].includes(h.toLowerCase())&& !Object.values(aliases).flat().includes(normalizeHeader(h))&&String(r[i]??'').trim()!=='')result[h]=String(r[i]).trim()});if(!Object.keys(result).length)throw new Error(`Row ${sourceRow} has no result columns.`);return {reg_no:reg,jamb_no:jamb,student_name:name,result_data:result}});if(students.length>1000)throw new Error('Maximum 1,000 students per CSV batch. Split larger files into multiple batches.');const expiry=new Date($('svExpiry').value+'T23:59:59.000Z');if(!Number.isFinite(expiry.getTime())||expiry<=new Date())throw new Error('Expiry date must be in the future.');$('svMsg').textContent=`Uploading ${students.length} student records…`;const data=await studentAdminCall({action:'create_batch',batch:{title:$('svTitle').value.trim(),result_type:$('svType').value,level:Number($('svLevel').value),semester:$('svSemester').value||null,session:$('svSession').value.trim(),source_filename:file.name,expires_at:expiry.toISOString(),publish:$('svPublish').checked},students});$('svMsg').textContent=`Batch created successfully with ${data.imported} student records. ${skippedNoJamb.length?`${skippedNoJamb.length} student row(s) without JAMB numbers were excluded (worksheet row(s): ${skippedNoJamb.slice(0,8).map(x=>x.sourceRow).join(', ')}${skippedNoJamb.length>8?', …':''}). `:''}${data.is_published?'It is published.':'It remains unpublished; review it before publishing.'}`;$('svTitle').value='';$('svSession').value='';$('svCsv').value='';$('svFileName').textContent='No CSV or Excel file selected';$('svPublish').checked=false;await listStudentBatches()}catch(e){console.error('Student result import failed:',e);$('svMsg').textContent=e.message||'Import failed.'}finally{btn.disabled=false}}
-async function listStudentBatches(){const box=$('svBatchList');box.textContent='Loading batches…';try{const data=await studentAdminCall({action:'list_batches'});if(!data.batches?.length){box.innerHTML='<p class="muted">No verification batches yet.</p>';return}box.innerHTML=data.batches.map(b=>`<div class="item"><div><b>${esc(b.title)}</b><div class="muted">${b.level} Level · ${esc([b.session,b.semester,b.result_type].filter(Boolean).join(' · '))} · Expires ${new Date(b.expires_at).toLocaleDateString()} · ${b.student_count} students · ${b.is_published?'Published':'Unpublished'}</div></div><div class="announcement-actions"><button class="btn" onclick="setStudentBatchPublished('${b.id}',${!b.is_published})">${b.is_published?'Unpublish':'Publish'}</button><button class="btn danger" onclick="deleteStudentBatch('${b.id}',${b.student_count},'${esc(b.title).replace(/'/g,"\\'")}')">Delete batch</button></div></div>`).join('')}catch(e){box.textContent='Could not load batches: '+e.message}}
-
-async function deleteStudentBatch(id,count,title){
-  const warning=`Permanently delete "${title}" and all ${count} student record(s)? This cannot be undone.`;
-  if(!confirm(warning))return;
-  try{const result=await studentAdminCall({action:'delete_batch',batch_id:id});alert(result.message||'Verification batch deleted.');await listStudentBatches();}
-  catch(e){alert('Could not delete batch: '+e.message)}
-}
-async function setStudentBatchPublished(id,published){if(!confirm(`${published?'Publish':'Unpublish'} this verification batch?`))return;try{await studentAdminCall({action:'set_published',batch_id:id,is_published:published});await listStudentBatches()}catch(e){alert('Could not update batch: '+e.message)}}
-
-sb.auth.onAuthStateChange(()=>show());show();</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin Dashboard — SCSN ADUSTECH</title>
+<link rel="canonical" href="https://scsnadustech.org/management/">
+<meta http-equiv="refresh" content="0;url=/management/">
+<script>window.location.replace('/management/');</script>
+</head>
+<body>
+<p>The admin dashboard has moved. <a href="/management/">Continue to the management portal</a>.</p>
+</body>
+</html>
