@@ -213,6 +213,64 @@ footer{background:#0A1830}
 .result-slip-foot{border-top:1px solid #222!important;padding-top:10px!important;margin-top:14px!important}
 @media(max-width:520px){.result-slip-head{padding:14px 12px 10px!important}.result-brand{grid-template-columns:58px minmax(0,1fr)!important;gap:8px!important}.result-brand img{width:54px!important;height:54px!important}.result-slip-body{padding:12px!important}.result-student-grid{gap:5px 12px!important}.result-table th,.result-table td{padding:6px 5px!important;font-size:11px!important}}
 @media print{.result-slip{border:0!important;box-shadow:none!important}.result-slip-head,.result-slip-body{background:#fff!important;color:#111!important}}
+
+/* Compact transcript layout: summary follows all academic details */
+.result-slip-head{padding:12px 18px 8px!important}
+.result-brand{gap:10px!important}
+.result-brand img{width:58px!important;height:58px!important}
+.result-brand strong{font-size:14px!important;line-height:1.2!important}
+.result-brand span{font-size:11px!important;margin-top:2px!important}
+.result-heading{margin:7px auto 0!important}
+.result-heading h3{font-size:14px!important;padding:4px 12px!important;margin:2px 0 4px!important}
+.verified-mark,.result-heading .verified-mark{font-size:10px!important}
+.result-slip-body{padding:12px 18px!important}
+.result-section-title{font-size:11px!important;padding-bottom:4px!important;margin:5px 0 7px!important}
+.result-student-grid{gap:4px 14px!important;margin-bottom:9px!important}
+.result-field{padding:1px 0!important}
+.result-field span{font-size:10px!important;margin-bottom:1px!important}
+.result-field strong{font-size:11px!important;line-height:1.2!important}
+.result-metrics{gap:0!important;margin-bottom:10px!important}
+.result-metric{padding:5px 8px!important}
+.result-metric span{font-size:9px!important}
+.result-metric strong{font-size:14px!important;margin-top:1px!important}
+.result-table-wrap{margin-bottom:10px!important}
+.result-table th,.result-table td{padding:4px 7px!important;font-size:10px!important;line-height:1.15!important}
+.result-table th{font-size:9px!important}
+.result-other,.result-additional,.result-fallback{padding:7px!important;font-size:10px!important;line-height:1.35!important;margin-bottom:9px!important}
+.result-additional{gap:3px!important}
+.result-additional-row{gap:8px!important;padding-bottom:3px!important;font-size:10px!important}
+.result-slip-foot{padding-top:6px!important;margin-top:8px!important}
+.result-slip-foot p{font-size:9px!important;margin:4px 0 2px!important}
+.result-slip-foot small{font-size:8px!important}
+@media(max-width:520px){.result-slip-head{padding:10px 10px 7px!important}.result-brand{grid-template-columns:48px minmax(0,1fr) 48px!important;gap:7px!important}.result-brand img:last-child{justify-self:end!important}.result-brand img{width:44px!important;height:44px!important}.result-brand strong{font-size:12px!important}.result-brand span{font-size:10px!important}.result-slip-body{padding:10px!important}.result-field strong{font-size:11px!important}.result-table th,.result-table td{padding:4px 4px!important;font-size:10px!important}}
+@media print{
+ @page{size:A4 portrait;margin:8mm}
+ html,body{margin:0!important;padding:0!important}
+ #studentVerifiedResult{width:100%!important;max-width:none!important;font-size:9px!important}
+ #studentVerifiedResult .result-slip-head{padding:7px 10px 5px!important}
+ #studentVerifiedResult .result-brand img{width:42px!important;height:42px!important}
+ #studentVerifiedResult .result-brand strong{font-size:11px!important}
+ #studentVerifiedResult .result-brand span{font-size:9px!important}
+ #studentVerifiedResult .result-heading{margin:4px auto 0!important}
+ #studentVerifiedResult .result-heading h3{font-size:11px!important;padding:3px 9px!important;margin:1px 0 2px!important}
+ #studentVerifiedResult .result-slip-body{padding:7px 10px!important}
+ #studentVerifiedResult .result-section-title{font-size:9px!important;margin:3px 0 4px!important;padding-bottom:3px!important}
+ #studentVerifiedResult .result-student-grid{gap:2px 10px!important;margin-bottom:5px!important}
+ #studentVerifiedResult .result-field span{font-size:8px!important;margin-bottom:0!important}
+ #studentVerifiedResult .result-field strong{font-size:9px!important;line-height:1.1!important}
+ #studentVerifiedResult .result-table-wrap{margin-bottom:5px!important}
+ #studentVerifiedResult .result-table th,#studentVerifiedResult .result-table td{font-size:8px!important;padding:2px 4px!important;line-height:1.05!important}
+ #studentVerifiedResult .result-metric{padding:3px 5px!important}
+ #studentVerifiedResult .result-metric span{font-size:7px!important}
+ #studentVerifiedResult .result-metric strong{font-size:10px!important;margin-top:0!important}
+ #studentVerifiedResult .result-other,#studentVerifiedResult .result-additional,#studentVerifiedResult .result-fallback{font-size:8px!important;padding:4px!important;margin-bottom:4px!important;line-height:1.15!important}
+ #studentVerifiedResult .result-additional-row{font-size:8px!important;padding-bottom:2px!important}
+ #studentVerifiedResult .result-slip-foot{margin-top:5px!important;padding-top:4px!important}
+ #studentVerifiedResult .result-slip-foot p{font-size:7px!important;margin:2px 0!important}
+ #studentVerifiedResult .result-slip-foot small{font-size:7px!important}
+ #studentVerifiedResult .result-actions{display:none!important}
+ #studentVerifiedResult .result-table-wrap,#studentVerifiedResult .result-metrics,#studentVerifiedResult .result-slip-foot{break-inside:avoid!important}
+}
 </style>
 </head>
 <body>
@@ -274,7 +332,7 @@ footer{background:#0A1830}
 <p id="studentVerifyMessage" class="muted" role="status" aria-live="polite" style="margin:0"></p>
 </form>
 <div id="studentVerifiedResult" class="hidden result-slip" aria-live="polite">
-<div class="result-slip-head"><div class="result-brand"><img src="assets/adustech-logo.jpeg" alt="ADUSTECH logo"><div><strong>ALIKO DANGOTE UNIVERSITY OF SCIENCE AND TECHNOLOGY, WUDIL</strong><span>CHEMISTRY DEPARTMENT</span></div></div><div class="result-heading"><h3>STUDENT'S RESULT STATEMENT</h3><span class="verified-mark">VERIFIED RESULT</span></div></div>
+<div class="result-slip-head"><div class="result-brand"><img src="assets/adustech-logo.jpeg" alt="ADUSTECH university logo"><div><strong>ALIKO DANGOTE UNIVERSITY OF SCIENCE AND TECHNOLOGY, WUDIL</strong><span>CHEMISTRY DEPARTMENT</span></div><img src="assets/scsn-crest.jpeg" alt="SCSN logo"></div><div class="result-heading"><h3>STUDENT'S RESULT STATEMENT</h3><span class="verified-mark">VERIFIED RESULT</span></div></div>
 <div class="result-slip-body"><div class="result-section-title">STUDENT INFORMATION</div><div class="result-student-grid">
 <div class="result-field result-field-wide"><span>Name</span><strong id="verifiedStudentName"></strong></div>
 <div class="result-field result-field-wide"><span>Reg. No</span><strong id="verifiedStudentReg"></strong></div>
@@ -284,11 +342,12 @@ footer{background:#0A1830}
 <div class="result-field"><span>Level</span><strong id="verifiedResultLevel"></strong></div>
 <div class="result-field"><span>Semester</span><strong id="verifiedResultSemester"></strong></div>
 <div class="result-field result-field-wide"><span>Session</span><strong id="verifiedResultSession"></strong></div></div>
-<div id="resultMetricsSection" class="hidden"><div class="result-section-title">ACADEMIC SUMMARY</div><div id="resultMetrics" class="result-metrics"></div></div>
+
 <div id="resultCoursesSection" class="hidden"><div class="result-section-title">COURSE PERFORMANCE</div><div class="result-table-wrap"><table class="result-table"><thead><tr><th>COURSE CODE</th><th>GRADE / VALUE</th></tr></thead><tbody id="resultCourses"></tbody></table></div></div>
 <div id="resultOtherSection" class="hidden"><div class="result-section-title">OTHER COURSES</div><p id="resultOtherCourses" class="result-other"></p></div>
 <div id="resultAdditionalSection" class="hidden"><div class="result-section-title">ADDITIONAL RESULT DETAILS</div><div id="resultAdditional" class="result-additional"></div></div>
 <p id="resultFallback" class="hidden result-fallback"></p>
+<div id="resultMetricsSection" class="hidden"><div class="result-section-title">ACADEMIC SUMMARY</div><div id="resultMetrics" class="result-metrics"></div></div>
 <div class="result-slip-foot"><span class="verified-mark">✓ Verification successful</span><p>Keep your result details private. Do not share it publicly.</p><small>Displayed electronically through the SCSN student result verification service.</small></div></div>
 <div class="result-actions"><button type="button" id="downloadStudentResult" class="btn primary">↓ Download / Save as PDF</button><span>Save a personal copy of your verified result.</span></div></div>
 </div>
