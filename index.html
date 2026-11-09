@@ -245,8 +245,7 @@ footer{background:#0A1830}
 <div class="result-slip-head"><div class="result-brand"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div><strong>ALIKO DANGOTE UNIVERSITY OF SCIENCE AND TECHNOLOGY</strong><span>WUDIL • STUDENTS’ CHEMICAL SOCIETY OF NIGERIA</span></div><img src="assets/adustech-logo.jpeg" alt="ADUSTECH logo"></div><div class="result-heading"><span>ACADEMIC RECORD</span><h3>STUDENT RESULT STATEMENT</h3><span class="verified-mark">✓ VERIFIED RESULT</span></div></div>
 <div class="result-slip-body"><div class="result-section-title">STUDENT INFORMATION</div><div class="result-student-grid">
 <div class="result-field result-field-wide"><span>Student name</span><strong id="verifiedStudentName"></strong></div>
-<div class="result-field"><span>Registration number</span><strong id="verifiedStudentReg"></strong></div><div class="result-field"><span>Result type</span><strong id="verifiedResultTitle"></strong></div>
-<div class="result-field result-field-wide"><span>Level / semester / session</span><strong id="verifiedResultMeta"></strong></div></div>
+<div class="result-field result-field-wide"><span>Registration number</span><strong id="verifiedStudentReg"></strong></div></div>
 <div id="resultMetricsSection" class="hidden"><div class="result-section-title">ACADEMIC SUMMARY</div><div id="resultMetrics" class="result-metrics"></div></div>
 <div id="resultCoursesSection" class="hidden"><div class="result-section-title">COURSE PERFORMANCE</div><div class="result-table-wrap"><table class="result-table"><thead><tr><th>COURSE CODE</th><th>GRADE / VALUE</th></tr></thead><tbody id="resultCourses"></tbody></table></div></div>
 <div id="resultOtherSection" class="hidden"><div class="result-section-title">OTHER COURSES</div><p id="resultOtherCourses" class="result-other"></p></div>
@@ -371,7 +370,7 @@ document.getElementById('studentResultForm').addEventListener('submit',async eve
   if(!batchId||!regNo||!jambNo){message.textContent='Select a result and enter both required numbers.';return;}
   button.disabled=true;button.textContent='Verifying…';message.textContent='Checking your details…';
   try{const {data,error}=await sb.functions.invoke('scsn-result-lookup',{body:{batch_id:batchId,reg_no:regNo,jamb_no:jambNo}});if(error||!data||!data.result){message.textContent=(data&&data.error)||'We could not verify these details. Check your entries and try again.';return;}
-    const r=data.result;document.getElementById('verifiedStudentName').textContent=r.student_name||'—';document.getElementById('verifiedStudentReg').textContent=r.reg_no||'—';document.getElementById('verifiedResultTitle').textContent=r.title||'—';document.getElementById('verifiedResultMeta').textContent=[r.level?(r.level+' Level'):null,r.semester,r.session].filter(Boolean).join(' • ')||'—';
+    const r=data.result;document.getElementById('verifiedStudentName').textContent=r.student_name||'';document.getElementById('verifiedStudentReg').textContent=r.reg_no||'';
     document.getElementById('resultOtherSection').classList.add('hidden');renderVerifiedResultData(r.result_data);document.getElementById('studentVerifiedResult').classList.remove('hidden');message.textContent='Your details were verified successfully.';
   }catch(error){console.error('Student result verification failed.');message.textContent='Verification is temporarily unavailable. Please try again later.';}finally{button.disabled=false;button.textContent='Verify and View Result';}
 });
