@@ -332,6 +332,29 @@ footer{background:#0A1830}
  #studentVerifiedResult .result-actions{display:none!important}
 }
 
+
+/* Final Android/Chrome print pagination fix: suppress trailing blank sheet */
+@media print{
+ html,body{height:auto!important;min-height:0!important;overflow:visible!important}
+ body{display:block!important}
+ body::before,body::after{display:none!important;content:none!important}
+ #student-verification,
+ #student-verification>.wrap,
+ #student-verification>.wrap>.card,
+ #studentVerifiedResult{
+  height:auto!important;min-height:0!important;max-height:none!important;
+  break-before:auto!important;page-break-before:auto!important;
+  break-after:auto!important;page-break-after:auto!important;
+  break-inside:auto!important;page-break-inside:auto!important;
+  overflow:visible!important;
+ }
+ #student-verification{padding:0!important;margin:0!important}
+ #student-verification>.wrap,
+ #student-verification>.wrap>.card{padding:0!important;margin:0!important}
+ #studentVerifiedResult{position:static!important;float:none!important;display:block!important;margin:0!important}
+ #studentVerifiedResult .result-slip-foot{break-after:auto!important;page-break-after:auto!important}
+}
+
 </style>
 </head>
 <body>
