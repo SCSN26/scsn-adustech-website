@@ -182,6 +182,37 @@ footer{background:#0A1830}
 
 /* Legacy password-protected results are retained but hidden from the public portal. */
 #results{display:none!important}
+
+/* Plain departmental-style result statement */
+.result-slip{border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;color:#111!important}
+.result-slip-head{background:#fff!important;color:#111!important;padding:18px 22px 12px!important;border-bottom:1px solid #222}
+.result-brand{display:grid!important;grid-template-columns:76px minmax(0,1fr)!important;gap:14px!important;align-items:center!important;text-align:center!important}
+.result-brand img{width:70px!important;height:70px!important;object-fit:contain!important;background:#fff!important;border:0!important;border-radius:0!important;padding:0!important}
+.result-brand strong{color:#111!important;font-size:clamp(13px,2.5vw,17px)!important;line-height:1.35!important;letter-spacing:0!important}
+.result-brand span{color:#111!important;font-size:13px!important;font-weight:800!important;letter-spacing:.04em!important;margin-top:4px!important}
+.result-heading{text-align:center!important;margin:12px auto 0!important;padding:0!important;border:0!important}
+.result-heading h3{display:inline-block!important;color:#111!important;font-size:16px!important;letter-spacing:0!important;border:2px solid #111!important;padding:7px 18px!important;margin:4px 0 8px!important}
+.verified-mark,.result-heading .verified-mark{display:block!important;width:max-content!important;margin:3px auto 0!important;background:transparent!important;color:#17633A!important;border:0!important;border-radius:0!important;padding:0!important;font-size:11px!important;letter-spacing:0!important}
+.result-slip-body{padding:18px 22px!important}
+.result-section-title{font-size:13px!important;font-weight:800!important;letter-spacing:.04em!important;color:#111!important;border-bottom:1px solid #222!important;padding-bottom:6px!important;margin:8px 0 10px!important}
+.result-student-grid{gap:8px 18px!important;margin-bottom:18px!important}
+.result-field{background:transparent!important;border:0!important;border-radius:0!important;padding:3px 0!important}
+.result-field span{color:#111!important;font-size:12px!important;font-weight:700!important;margin-bottom:2px!important}
+.result-field strong{color:#111!important;font-size:13px!important;font-weight:700!important}
+.result-metrics{gap:0!important;margin-bottom:18px!important;border:1px solid #222!important}
+.result-metric{background:#fff!important;border:0!important;border-right:1px solid #222!important;border-top:0!important;border-radius:0!important;padding:8px 10px!important}
+.result-metric span{color:#111!important;font-size:11px!important;letter-spacing:0!important}
+.result-metric strong{color:#111!important;font-size:16px!important;margin-top:3px!important}
+.result-table-wrap{border:1px solid #222!important;border-radius:0!important;margin-bottom:18px!important}
+.result-table{min-width:0!important}
+.result-table th,.result-table td{padding:7px 9px!important;text-align:left!important;border-bottom:1px solid #777!important;font-size:12px!important;color:#111!important}
+.result-table th{background:#eee!important;color:#111!important;font-size:11px!important;letter-spacing:0!important}
+.result-table td:last-child{font-weight:700!important;color:#111!important}
+.result-other,.result-additional,.result-fallback{background:#fff!important;border:1px solid #777!important;border-radius:0!important;color:#111!important;padding:9px!important}
+.result-additional-row{border-bottom:1px solid #aaa!important}
+.result-slip-foot{border-top:1px solid #222!important;padding-top:10px!important;margin-top:14px!important}
+@media(max-width:520px){.result-slip-head{padding:14px 12px 10px!important}.result-brand{grid-template-columns:58px minmax(0,1fr)!important;gap:8px!important}.result-brand img{width:54px!important;height:54px!important}.result-slip-body{padding:12px!important}.result-student-grid{gap:5px 12px!important}.result-table th,.result-table td{padding:6px 5px!important;font-size:11px!important}}
+@media print{.result-slip{border:0!important;box-shadow:none!important}.result-slip-head,.result-slip-body{background:#fff!important;color:#111!important}}
 </style>
 </head>
 <body>
@@ -243,7 +274,7 @@ footer{background:#0A1830}
 <p id="studentVerifyMessage" class="muted" role="status" aria-live="polite" style="margin:0"></p>
 </form>
 <div id="studentVerifiedResult" class="hidden result-slip" aria-live="polite">
-<div class="result-slip-head"><div class="result-brand"><img src="assets/scsn-crest.jpeg" alt="SCSN crest"><div><strong>ALIKO DANGOTE UNIVERSITY OF SCIENCE AND TECHNOLOGY, WUDIL</strong><span>CHEMISTRY DEPARTMENT</span></div><img src="assets/adustech-logo.jpeg" alt="ADUSTECH logo"></div><div class="result-heading"><h3>STUDENT'S RESULT STATEMENT</h3><span class="verified-mark">✓ VERIFIED RESULT</span></div></div>
+<div class="result-slip-head"><div class="result-brand"><img src="assets/adustech-logo.jpeg" alt="ADUSTECH logo"><div><strong>ALIKO DANGOTE UNIVERSITY OF SCIENCE AND TECHNOLOGY, WUDIL</strong><span>CHEMISTRY DEPARTMENT</span></div></div><div class="result-heading"><h3>STUDENT'S RESULT STATEMENT</h3><span class="verified-mark">VERIFIED RESULT</span></div></div>
 <div class="result-slip-body"><div class="result-section-title">STUDENT INFORMATION</div><div class="result-student-grid">
 <div class="result-field result-field-wide"><span>Name</span><strong id="verifiedStudentName"></strong></div>
 <div class="result-field result-field-wide"><span>Reg. No</span><strong id="verifiedStudentReg"></strong></div>
