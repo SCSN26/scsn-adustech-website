@@ -546,23 +546,19 @@ function renderVerifiedResultData(raw,resultType){
     Object.entries(data).forEach(([key,value])=>{
       const k=key.trim().toUpperCase();
       if(otherKeys.has(k)){
-        if(isCumulative)additional.push(['Overall Carry Over Courses',value]);
+        if(isCumulative)metrics.push(['Overall Carry Over Courses',value]);
         else{document.getElementById('resultOtherCourses').textContent=resultValueText(value);show('resultOtherSection',true);}
         return;
       }
       if(/^[A-Z]{2,5}\s?\d{3,5}[A-Z]?$/.test(k)){courses.push([key,value]);return;}
-      if(isCumulative){
-        if(cumulativeMetricKeys.has(k)||!semesterMetricKeys.has(k))metrics.push([key,value]);
-        else additional.push([key,value]);
-        return;
-      }
+      if(isCumulative){metrics.push([key,value]);return;}
       if(semesterMetricKeys.has(k)){metrics.push([key,value]);return;}
       additional.push([key,value]);
     });
   }
   const mb=document.getElementById('resultMetrics');mb.replaceChildren();
   metrics.forEach(([k,v])=>{const card=document.createElement('div');card.className='result-metric';const label=document.createElement('span');label.textContent=k;const val=document.createElement('strong');val.textContent=resultValueText(v);card.append(label,val);mb.append(card);});
-  show('resultMetricsSection',metrics.length>0||isCumulative&&additional.length>0);
+  show('resultMetricsSection',metrics.length>0);
   const tb=document.getElementById('resultCourses');tb.replaceChildren();
   courses.forEach(([k,v])=>{const tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=k;b.textContent=resultValueText(v);tr.append(a,b);tb.append(tr);});
   show('resultCoursesSection',courses.length>0);
@@ -572,8 +568,6 @@ function renderVerifiedResultData(raw,resultType){
   const additionalSection=document.getElementById('resultAdditionalSection');
   if(isCumulative){
     additionalSection.classList.add('hidden');
-    if(additional.length){const heading=additionalSection.querySelector('.result-section-title');if(heading)heading.textContent='CUMULATIVE RESULT DETAILS';summary.appendChild(additionalSection);additionalSection.classList.remove('hidden');}
-    else additionalSection.classList.add('hidden');
     show('resultOtherSection',false);
   }else{
     const heading=additionalSection.querySelector('.result-section-title');if(heading)heading.textContent='ADDITIONAL RESULT DETAILS';
