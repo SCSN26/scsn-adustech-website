@@ -533,17 +533,57 @@ async function loadStudentResultBatches(){
 }
 function hideVerifiedStudentResult(){document.getElementById('studentVerifiedResult').classList.add('hidden');}
 function resultValueText(value){if(value===null||value===undefined)return '—';if(typeof value==='object')return JSON.stringify(value);return String(value);}
-function renderVerifiedResultData(raw){
-  const metricKeys=new Set(['GPA','CGPA','TCE','TCR','TPE','TCU','TCP','GPA POINT','CGPA POINT']);
+function renderVerifiedResultData(raw,resultType){
+  const type=String(resultType||'').trim().toLowerCase();
+  const isCumulative=type==='cumulative';
+  const semesterMetricKeys=new Set(['GPA','TCE','TCR','TPE']);
+  const cumulativeMetricKeys=new Set(['CGPA','CCE','CCR','CPE','PCCE','PCCR','PCPE','PCGPA']);
   const otherKeys=new Set(['OTHER COURSES','OTHER_COURSES','OTHER COURSES/GRADES','OTHER']);
   const metrics=[],courses=[],additional=[];let data=raw;
   if(typeof data==='string'){const t=data.trim();if((t.startsWith('{')&&t.endsWith('}'))||(t.startsWith('[')&&t.endsWith(']'))){try{data=JSON.parse(t)}catch(_){data=null}}else{data=null}}
   const show=(id,visible)=>document.getElementById(id).classList.toggle('hidden',!visible);
-  if(data&&typeof data==='object'&&!Array.isArray(data)){Object.entries(data).forEach(([key,value])=>{const k=key.trim().toUpperCase();if(otherKeys.has(k)){document.getElementById('resultOtherCourses').textContent=resultValueText(value);show('resultOtherSection',true);return;}if(metricKeys.has(k)){metrics.push([key,value]);return;}if(/^[A-Z]{2,5}\s?\d{3,5}[A-Z]?$/.test(k)){courses.push([key,value]);return;}additional.push([key,value]);});}
-  const mb=document.getElementById('resultMetrics');mb.replaceChildren();metrics.forEach(([k,v])=>{const card=document.createElement('div');card.className='result-metric';const label=document.createElement('span');label.textContent=k;const val=document.createElement('strong');val.textContent=resultValueText(v);card.append(label,val);mb.append(card);});show('resultMetricsSection',metrics.length>0);
-  const tb=document.getElementById('resultCourses');tb.replaceChildren();courses.forEach(([k,v])=>{const tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=k;b.textContent=resultValueText(v);tr.append(a,b);tb.append(tr);});show('resultCoursesSection',courses.length>0);
-  const ab=document.getElementById('resultAdditional');ab.replaceChildren();additional.forEach(([k,v])=>{const row=document.createElement('div');row.className='result-additional-row';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=k;b.textContent=resultValueText(v);row.append(a,b);ab.append(row);});show('resultAdditionalSection',additional.length>0);
-  const hasOther=!document.getElementById('resultOtherSection').classList.contains('hidden');const hasStructured=metrics.length+courses.length+additional.length>0||hasOther;show('resultFallback',!hasStructured);if(!hasStructured)document.getElementById('resultFallback').textContent=typeof raw==='string'?raw:JSON.stringify(raw,null,2);
+  if(data&&typeof data==='object'&&!Array.isArray(data)){
+    Object.entries(data).forEach(([key,value])=>{
+      const k=key.trim().toUpperCase();
+      if(otherKeys.has(k)){
+        if(isCumulative)additional.push(['Overall Carry Over Courses',value]);
+        else{document.getElementById('resultOtherCourses').textContent=resultValueText(value);show('resultOtherSection',true);}
+        return;
+      }
+      if(/^[A-Z]{2,5}\s?\d{3,5}[A-Z]?$/.test(k)){courses.push([key,value]);return;}
+      if(isCumulative){
+        if(cumulativeMetricKeys.has(k)||!semesterMetricKeys.has(k))metrics.push([key,value]);
+        else additional.push([key,value]);
+        return;
+      }
+      if(semesterMetricKeys.has(k)){metrics.push([key,value]);return;}
+      additional.push([key,value]);
+    });
+  }
+  const mb=document.getElementById('resultMetrics');mb.replaceChildren();
+  metrics.forEach(([k,v])=>{const card=document.createElement('div');card.className='result-metric';const label=document.createElement('span');label.textContent=k;const val=document.createElement('strong');val.textContent=resultValueText(v);card.append(label,val);mb.append(card);});
+  show('resultMetricsSection',metrics.length>0||isCumulative&&additional.length>0);
+  const tb=document.getElementById('resultCourses');tb.replaceChildren();
+  courses.forEach(([k,v])=>{const tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');a.textContent=k;b.textContent=resultValueText(v);tr.append(a,b);tb.append(tr);});
+  show('resultCoursesSection',courses.length>0);
+  const ab=document.getElementById('resultAdditional');ab.replaceChildren();
+  additional.forEach(([k,v])=>{const row=document.createElement('div');row.className='result-additional-row';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=k;b.textContent=resultValueText(v);row.append(a,b);ab.append(row);});
+  const summary=document.getElementById('resultMetricsSection');
+  const additionalSection=document.getElementById('resultAdditionalSection');
+  if(isCumulative){
+    additionalSection.classList.add('hidden');
+    if(additional.length){const heading=additionalSection.querySelector('.result-section-title');if(heading)heading.textContent='CUMULATIVE RESULT DETAILS';summary.appendChild(additionalSection);additionalSection.classList.remove('hidden');}
+    else additionalSection.classList.add('hidden');
+    show('resultOtherSection',false);
+  }else{
+    const heading=additionalSection.querySelector('.result-section-title');if(heading)heading.textContent='ADDITIONAL RESULT DETAILS';
+    if(additional.length){summary.parentNode.insertBefore(additionalSection,summary);additionalSection.classList.remove('hidden');}
+    else additionalSection.classList.add('hidden');
+  }
+  const hasOther=!document.getElementById('resultOtherSection').classList.contains('hidden');
+  const hasStructured=metrics.length+courses.length+additional.length>0||hasOther;
+  show('resultFallback',!hasStructured);
+  if(!hasStructured)document.getElementById('resultFallback').textContent=typeof raw==='string'?raw:JSON.stringify(raw,null,2);
 }
 document.getElementById('studentResultForm').addEventListener('submit',async event=>{
   event.preventDefault();const button=document.getElementById('studentVerifyButton'),message=document.getElementById('studentVerifyMessage');
@@ -553,7 +593,7 @@ document.getElementById('studentResultForm').addEventListener('submit',async eve
   try{const {data,error}=await sb.functions.invoke('scsn-result-lookup',{body:{batch_id:batchId,reg_no:regNo,jamb_no:jambNo}});if(error||!data||!data.result){message.textContent=(data&&data.error)||'We could not verify these details. Check your entries and try again.';return;}
     const r=data.result;document.getElementById('verifiedStudentName').textContent=r.student_name||'';document.getElementById('verifiedStudentReg').textContent=r.reg_no||'';
     document.getElementById('verifiedResultLevel').textContent=r.level??'';document.getElementById('verifiedResultSemester').textContent=r.semester??'';document.getElementById('verifiedResultSession').textContent=r.session??'';
-    document.getElementById('resultOtherSection').classList.add('hidden');renderVerifiedResultData(r.result_data);document.getElementById('studentVerifiedResult').classList.remove('hidden');message.textContent='Your details were verified successfully.';
+    document.getElementById('resultOtherSection').classList.add('hidden');renderVerifiedResultData(r.result_data,r.result_type);document.getElementById('studentVerifiedResult').classList.remove('hidden');message.textContent='Your details were verified successfully.';
   }catch(error){console.error('Student result verification failed.');message.textContent='Verification is temporarily unavailable. Please try again later.';}finally{button.disabled=false;button.textContent='Verify and View Result';}
 });
 document.getElementById('downloadStudentResult').addEventListener('click',()=>{if(document.getElementById('studentVerifiedResult').classList.contains('hidden'))return;window.print();});
